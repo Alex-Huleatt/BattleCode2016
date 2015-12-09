@@ -3,26 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package movement;
+package FrWorks.movement;
 
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.HashSet;
 
-import movement.pathplanning.AStar;
-import movement.pathplanning.DSLite;
-import util.Common;
-import util.Geom;
-import util.Timer;
-import battlecode.common.Team;
-import battlecode.common.TerrainTile;
-import java.util.HashMap;
+import FrWorks.movement.pathplanning.AStar;
+import FrWorks.util.Common;
+import FrWorks.util.Geom;
 
 /**
- * A movement handling class designed to have a pretty API.
+ * A FrWorks.movement handling class designed to have a pretty API.
  * 
  * Couple notes:
  * Modulo 8 is equivalent to bit-wise AND with 7 (% 8 --> & 7), 
@@ -95,7 +90,7 @@ public class MovementController {
     }
     
     /**
-     * This function is a movement strategy that is effectively bugging.
+     * This function is a FrWorks.movement FrWorks.strategy that is effectively bugging.
      * It was designed to be highly constrained, it only utilizes the 8 cells
      * directly neighboring the unit. 
      * As far as I can tell it's guaranteed. There is built in probabilistic 

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package movement.pathplanning;
+package FrWorks.movement.pathplanning;
 
 import battlecode.common.MapLocation;
 

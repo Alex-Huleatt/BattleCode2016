@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package util;
+package FrWorks.util;
 
 import battlecode.common.Clock;
-import battlecode.common.GameConstants;
 
 /**
  *

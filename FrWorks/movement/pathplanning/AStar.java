@@ -1,4 +1,4 @@
-package movement.pathplanning;
+package FrWorks.movement.pathplanning;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

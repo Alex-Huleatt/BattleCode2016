@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jobs;
+package FrWorks.jobs;
 
-import comm.RadioController;
+import FrWorks.comm.RadioController;
 import battlecode.common.RobotController;
 
 /**
@@ -23,7 +23,7 @@ public class JobController {
     }
     
     public Job findJob() {
-        int numJobs = radC.queueLen("jobs")/Job.NUM_INTS;
+        int numJobs = radC.queueLen("FrWorks/jobs")/Job.NUM_INTS;
         Job bestJob = null;
         double bestJob_val = 0.0;
         for (int i = 0; i < numJobs; i++) {
@@ -48,7 +48,7 @@ public class JobController {
     private Job readJob(int n) {
         int[] serial = new int[Job.NUM_INTS];
         for (int i = 0; i < serial.length; i++) {
-            serial[i] = radC.getInt("jobs", Job.NUM_INTS * n + i);
+            serial[i] = radC.getInt("FrWorks/jobs", Job.NUM_INTS * n + i);
         }
         return new Job(serial);
     }

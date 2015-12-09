@@ -3,7 +3,7 @@
 So basically this is a little way for you to separate all your behavior code so that it is trivial to add new behavior, and react dynamically to the environment really easily.
 
 Your unit logic need only have a MoodController.
-The class containing the MoodController should have **no** interactions with the moods, **except** for setting the initial mood on the construction of the MoodController.
+The class containing the MoodController should have **no** interactions with the FrWorks.moods, **except** for setting the initial mood on the construction of the MoodController.
 
 
 You are to make a class, extending Mood, for each behavior you want your robot to exhibit. 

@@ -1,4 +1,4 @@
-package moods;
+package FrWorks.moods;
 
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
