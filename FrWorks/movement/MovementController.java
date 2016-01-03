@@ -5,16 +5,16 @@
  */
 package FrWorks.movement;
 
+import FrWorks.movement.pathplanning.AStar;
+import FrWorks.util.Common;
+import FrWorks.util.Geom;
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 
 import java.util.Arrays;
 import java.util.HashSet;
-
-import FrWorks.movement.pathplanning.AStar;
-import FrWorks.util.Common;
-import FrWorks.util.Geom;
+import java.util.Random;
 
 /**
  * A FrWorks.movement handling class designed to have a pretty API.
@@ -52,6 +52,7 @@ public class MovementController {
     
     private MapLocation me;
 
+    private Random rand;
     public MovementController(RobotController rc) {
         this.rc = rc;
     }
@@ -188,11 +189,6 @@ public class MovementController {
         return null;
     }
 
-    private boolean initReverse(MapLocation goal) {
-        int offset = Math.min(8 - dir, dir);
-        int dir_to_obs = Common.dirToInt(me.directionTo(goal));
-        return ((dir_to_obs + offset) % 8) < 4;
-    }
 
     public void move(Direction dir) throws Exception {
         if (rc.isCoreReady() && rc.canMove(dir)) {
@@ -231,8 +227,7 @@ public class MovementController {
 
     private void initBug() throws Exception {
         bug = true;
-        simpleMove(end);
-        reverse = initReverse(end);
+        reverse = rand.nextBoolean();
         closest = me.distanceSquaredTo(end);
         cycle_loc = me;
         cycle_check = false;

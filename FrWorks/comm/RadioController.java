@@ -112,7 +112,7 @@ public class RadioController {
     }
 
     public static int getMask(int round_num) {
-        return ((int) Rand.xorshiftstar(round_num + 1)) << 24;
+        return Clock.getRoundNum() << 24;
     }
 
 
@@ -287,5 +287,17 @@ public class RadioController {
             System.out.println("Error in RadioController.queueLen, no queue by that name exists");
             return Integer.MIN_VALUE;
         }
+    }
+
+
+    //Potential field stuff down here
+    //TODO
+
+    public int getCellInfo(MapLocation m) {
+        return 0;
+    }
+
+    public void setCellInfo(MapLocation m , int info) {
+
     }
 }
