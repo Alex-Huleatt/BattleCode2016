@@ -16,7 +16,7 @@ import java.util.HashSet;
  * @author alexhuleatt
  */
 public class StratController {
-    
+
     private final RobotController rc;
 
     private HashSet<Strat> activeStrats;
