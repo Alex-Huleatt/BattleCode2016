@@ -1,37 +1,37 @@
 package team018;
 
-import battlecode.common.Clock;
-import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
-import battlecode.common.Team;
-import team018.frameworks.movement.MovementController;
-
-import java.util.Random;
+import team018.units.Unit;
+import team018.units.archon.ArchonDefault;
+import team018.units.guard.GuardDefault;
+import team018.units.scout.ScoutDefault;
 
 
 public class RobotPlayer {
-	public static void run(RobotController rc)
-	{try{	
-		Random rand = new Random(rc.getID());
-		Team us = rc.getTeam();
-		Team them = us.opponent();
-		
-		MovementController mc = new MovementController(rc);
+	public static void run(RobotController rc) {
+		while (true) {
+			try {
+				typeSwitch(rc);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-		//	Test movement: go to a target location once.
-		MapLocation loc = rc.getLocation();
-		loc.add(10, 5);
-		
-		while (true)
-		{
-			//	do the movement
-			mc.bug(loc);
-			Clock.yield();
+	public static void typeSwitch(RobotController rc) {
+		switch (rc.getType()) {
+			case ARCHON: {
+				new Unit(rc, new ArchonDefault(rc)).run();
+				return;
+			}
+			case GUARD: {
+				new Unit(rc, new GuardDefault(rc)).run();
+				return;
+			}
+			case SCOUT: {
+				new Unit(rc, new ScoutDefault(rc)).run();
+                return;
+			}
 		}
-		}
-		
-	catch(Exception e)
-	{
-		e.printStackTrace();
-	}}
+	}
 }

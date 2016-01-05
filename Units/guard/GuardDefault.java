@@ -1,4 +1,4 @@
-package team018.units.archon;
+package team018.units.guard;
 
 import battlecode.common.RobotController;
 import team018.frameworks.moods.Mood;
@@ -6,12 +6,10 @@ import team018.frameworks.moods.Mood;
 /**
  * Created by alexhuleatt on 1/4/16.
  */
-public class Default extends Mood {
+public class GuardDefault extends Mood {
 
-
-    public Default(RobotController rc) {
+    public GuardDefault(RobotController rc) {
         super(rc);
-
     }
 
     @Override
