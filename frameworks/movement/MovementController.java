@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package team018.FrWorks.movement;
+package team018.frameworks.movement;
 
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
-import team018.FrWorks.movement.pathplanning.AStar;
-import team018.FrWorks.util.Common;
-import team018.FrWorks.util.Geom;
+import team018.frameworks.movement.pathplanning.AStar;
+import team018.frameworks.util.Common;
+import team018.frameworks.util.Geom;
 
 import java.util.Arrays;
 import java.util.HashSet;

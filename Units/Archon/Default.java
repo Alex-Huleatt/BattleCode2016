@@ -1,8 +1,7 @@
 package team018.units.archon;
 
 import battlecode.common.RobotController;
-import team018.FrWorks.moods.Mood;
-import team018.FrWorks.moods.MoodController;
+import team018.frameworks.moods.Mood;
 
 /**
  * Created by alexhuleatt on 1/4/16.

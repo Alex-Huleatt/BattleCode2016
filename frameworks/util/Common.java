@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package team018.FrWorks.util;
+package team018.frameworks.util;
 
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;

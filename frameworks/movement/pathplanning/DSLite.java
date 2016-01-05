@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package team018.FrWorks.movement.pathplanning;
+package team018.frameworks.movement.pathplanning;
 
-import team018.FrWorks.util.Pair;
-import team018.FrWorks.util.Point;
+import team018.frameworks.util.Pair;
+import team018.frameworks.util.Point;
 import java.util.ArrayList;
 
 import java.util.PriorityQueue;
