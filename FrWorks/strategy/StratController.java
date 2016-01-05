@@ -6,6 +6,7 @@
 package team018.FrWorks.strategy;
 
 import battlecode.common.RobotController;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -15,7 +16,7 @@ import java.util.HashSet;
  * @author alexhuleatt
  */
 public class StratController {
-
+    
     private final RobotController rc;
 
     private HashSet<Strat> activeStrats;
@@ -85,7 +86,6 @@ public class StratController {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
-
             @Override
             public boolean reasonable(EnumSet<Fact> facts) {
                 return facts.contains(Fact.SMALL_MAP) || facts.contains(Fact.EARLY_GAME);
@@ -99,6 +99,7 @@ public class StratController {
             }
 
             @Override
+
             public boolean reasonable(EnumSet<Fact> facts) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
