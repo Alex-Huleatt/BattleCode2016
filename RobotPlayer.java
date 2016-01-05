@@ -8,6 +8,11 @@ import team018.units.scout.ScoutDefault;
 
 
 public class RobotPlayer {
+
+    /**
+     * If a Unit throws an exception we catch it and re-enter
+     * @param rc
+     */
 	public static void run(RobotController rc) {
 		while (true) {
 			try {
@@ -18,7 +23,7 @@ public class RobotPlayer {
 		}
 	}
 
-	public static void typeSwitch(RobotController rc) {
+	public static void typeSwitch(RobotController rc) throws Exception {
 		switch (rc.getType()) {
 			case ARCHON: {
 				new Unit(rc, new ArchonDefault(rc)).run();

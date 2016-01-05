@@ -27,7 +27,7 @@ public abstract class Mood {
      * location, nearby units, etc. So that run and swing can see them without
      * having to calculate them.
      */
-    void update() {
+    public void update() {
         me = rc.getLocation();
     }
 
@@ -36,7 +36,7 @@ public abstract class Mood {
      *
      * @return The new mood, null or the same type for no swing.
      */
-    Mood swing() {
+    public Mood swing() {
         return null;
     }
 
