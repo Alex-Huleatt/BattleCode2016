@@ -7,7 +7,7 @@ import team018.FrWorks.moods.MoodController;
 /**
  * Created by alexhuleatt on 1/4/16.
  */
-public abstract class Unit {
+public class Unit {
 
     public RobotController rc;
     public MoodController mc;
