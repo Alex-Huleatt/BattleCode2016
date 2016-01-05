@@ -43,6 +43,6 @@ public abstract class Mood {
     /**
      * Does not make sense to have a default, really.
      */
-    abstract void act();
+    public abstract void act();
 
 }
