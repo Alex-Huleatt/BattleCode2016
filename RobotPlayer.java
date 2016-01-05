@@ -37,6 +37,9 @@ public class RobotPlayer {
 				new Unit(rc, new ScoutDefault(rc)).run();
                 return;
 			}
+			default: {
+				return;
+			}
 		}
 	}
 }
