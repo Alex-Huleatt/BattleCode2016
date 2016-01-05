@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package FrWorks.jobs;
+package team018.FrWorks.jobs;
 
-import FrWorks.comm.RadioController;
 import battlecode.common.RobotController;
+import unused.RadioController;
 
 /**
  *

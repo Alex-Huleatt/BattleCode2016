@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package FrWorks.movement.pathplanning;
+package team018.FrWorks.movement.pathplanning;
 
-import FrWorks.util.Pair;
-import FrWorks.util.Point;
+import team018.FrWorks.util.Pair;
+import team018.FrWorks.util.Point;
 import java.util.ArrayList;
 
 import java.util.PriorityQueue;
@@ -15,6 +15,7 @@ import java.util.PriorityQueue;
  *
  * @author alexhuleatt
  */
+@SuppressWarnings({"unchecked","rawtypes"})
 public class DSLite {
 
     private final int[][] parent;

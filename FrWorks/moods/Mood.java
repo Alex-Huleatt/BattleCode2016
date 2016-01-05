@@ -1,4 +1,4 @@
-package FrWorks.moods;
+package team018.FrWorks.moods;
 
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
@@ -15,14 +15,10 @@ public abstract class Mood {
     public final RobotController rc;
     public MapLocation me;
 
-    public final MapLocation enhq;
-    public final MapLocation hq;
     public final Team team;
 
     public Mood(RobotController rc) {
         this.rc = rc;
-        this.hq = rc.senseHQLocation();
-        this.enhq = rc.senseEnemyHQLocation();
         this.team = rc.getTeam();
     }
 

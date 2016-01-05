@@ -1,10 +1,12 @@
-package toddplayer;
+package team018.toddplayer;
 
-import battlecode.common.*;
+import battlecode.common.Clock;
+import battlecode.common.MapLocation;
+import battlecode.common.RobotController;
+import battlecode.common.Team;
+import team018.FrWorks.movement.MovementController;
 
 import java.util.Random;
-
-import FrWorks.movement.MovementController;
 
 
 public class RobotPlayer {

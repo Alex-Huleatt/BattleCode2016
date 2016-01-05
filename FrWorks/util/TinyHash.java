@@ -11,6 +11,7 @@ package FrWorks.util;
  * @param <K>
  * @param <E>
  */
+@SuppressWarnings("unchecked")
 public class TinyHash<K, E> {
 
     private final Object[][] keys;
@@ -46,6 +47,7 @@ public class TinyHash<K, E> {
      * @param e
      * @return
      */
+
     public boolean put(K k, E e) {
         int h1 = k.hashCode() % cap;
         int n_index = next_index(h1);

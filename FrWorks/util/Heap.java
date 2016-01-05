@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package FrWorks.util;
+package team018.FrWorks.util;
 
 /**
  *
  * @author Alex
  * @param <E>
  */
+@SuppressWarnings({"unchecked","rawtypes"})
 public class Heap<E extends Comparable> {
 
     private final Comparable[] arr;

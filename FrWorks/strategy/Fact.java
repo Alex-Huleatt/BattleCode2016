@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package FrWorks.strategy;
+package team018.FrWorks.strategy;
 
 import battlecode.common.RobotController;
 

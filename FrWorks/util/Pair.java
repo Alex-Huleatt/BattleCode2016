@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package FrWorks.util;
+package team018.FrWorks.util;
 
 /**
  *
@@ -11,6 +11,7 @@ package FrWorks.util;
  * @param <A>
  * @param <B>
  */
+@SuppressWarnings({"unchecked","rawtypes"})
 public class Pair<A extends Comparable,B extends Comparable> implements Comparable {
     public A a;
     public B b;

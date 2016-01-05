@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package FrWorks.comm;
+package team018.FrWorks.comm;
 
 /**
  * It is the responsibility of the caller to know what a message means. Just add

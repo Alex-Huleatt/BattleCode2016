@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package FrWorks.movement;
+package team018.FrWorks.movement;
 
-import FrWorks.movement.pathplanning.AStar;
-import FrWorks.util.Common;
-import FrWorks.util.Geom;
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import team018.FrWorks.movement.pathplanning.AStar;
+import team018.FrWorks.util.Common;
+import team018.FrWorks.util.Geom;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -241,8 +241,8 @@ public class MovementController {
     }
 
     public boolean isObs(MapLocation m) throws Exception {
-        boolean pathable = rc.isPathable(rc.getType(), m);
+        boolean rubble = Common.isObstacle(rc,m);
         boolean hasUnit = rc.senseRobotAtLocation(m) != null;
-        return !(pathable || (hasUnit && Math.random() > .9));
+        return rubble || !((hasUnit && Math.random() > .9));
     }
 }

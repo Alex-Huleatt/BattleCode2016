@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package FrWorks.util;
+package team018.FrWorks.util;
 
 /**
  *
  * @author alexhuleatt
  * @param <E>
  */
+@SuppressWarnings({"unchecked","rawtypes"})
 public class Point<E extends Comparable> implements Comparable {
 
     public final int x;
@@ -64,6 +65,7 @@ public class Point<E extends Comparable> implements Comparable {
     }
 
     @Override
+
     public int compareTo(Object o) {
         if (!(o instanceof Point<?>)) {
             return 0;

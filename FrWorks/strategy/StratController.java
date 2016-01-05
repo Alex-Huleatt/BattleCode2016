@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package FrWorks.strategy;
+package team018.FrWorks.strategy;
 
-import FrWorks.comm.RadioController;
-import FrWorks.jobs.Job;
-import FrWorks.jobs.JobController;
+import team018.FrWorks.jobs.Job;
+import team018.FrWorks.jobs.JobController;
 import battlecode.common.RobotController;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -19,16 +18,14 @@ import java.util.HashSet;
  */
 public class StratController {
 
-    private final RadioController radC;
     private final JobController jobC;
     private final RobotController rc;
 
     private HashSet<Job> activeJobs;
     private HashSet<Strat> activeStrats;
 
-    public StratController(RobotController rc, RadioController radC, JobController jobC) {
+    public StratController(RobotController rc, JobController jobC) {
         this.rc = rc;
-        this.radC = radC;
         this.jobC = jobC;
     }
 
@@ -52,19 +49,7 @@ public class StratController {
     private void updateJobs() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    /**
-     * Write the current FrWorks.jobs to the radio in terms of priority.
-     */
-    public void employ() {
-        radC.resetQueue("FrWorks/jobs"); //clear the queue.
-        for (Job j : activeJobs) {
-            int[] serial = j.serialize();
-            for (int n : serial) {
-                radC.push("FrWorks/jobs", n);
-            }
-        }
-    }
+    
 
     /**
      * TODO Returns how important a job is.

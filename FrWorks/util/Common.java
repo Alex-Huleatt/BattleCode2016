@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package FrWorks.util;
+package team018.FrWorks.util;
 
 import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
-import battlecode.common.TerrainTile;
 
 
 /**
@@ -63,15 +62,10 @@ public class Common {
     }
 
     public static boolean isObstacle(RobotController rc, MapLocation loc) throws Exception {
-        TerrainTile tt = rc.senseTerrainTile(loc);
-//        if (tt == TerrainTile.VOID || tt == TerrainTile.OFF_MAP) {
-//            return true;
-//        }
-//        if (rc.canSenseLocation(loc)) {
-//            RobotInfo r = rc.senseRobotAtLocation(loc);
-//            return (r != null) && 
-//        }
-        return !rc.isPathable(rc.getType(),loc);
+        if (rc.canSenseLocation(loc)) {
+            return rc.senseRubble(loc) > 50;
+        }
+        return true;
     }
     
     

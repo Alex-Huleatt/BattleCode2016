@@ -12,6 +12,7 @@ import java.util.Iterator;
  * @author alexhuleatt
  * @param <K>
  */
+@SuppressWarnings("unchecked")
 public class PopArray<K> implements Iterable<K> {
     
     int[] indices;
@@ -40,7 +41,7 @@ public class PopArray<K> implements Iterable<K> {
         len++;
         return dex;
     }
-    
+
     public K pop(int index) {
         indices[indices_index++]=index;
         len--;
@@ -62,6 +63,7 @@ public class PopArray<K> implements Iterable<K> {
     }
 
     @Override
+
     public Iterator<K> iterator() {
         return new Iterator<K>() {
             int in = 0;
