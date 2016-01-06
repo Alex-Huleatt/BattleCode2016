@@ -38,7 +38,8 @@ public class GuardDefault extends Mood
         // If it can attack, try!
         if (rc.isCoreReady())
         {
-            RobotInfo[] robots = rc.senseHostileRobots(myLocation, sensorRangeSquared);
+
+            RobotInfo[] robots = rc.senseNearbyRobots(sensorRangeSquared, team.opponent());
             rc.setIndicatorString(0, "Robots: " + robots.length);
 
             RobotInfo closest = null;
