@@ -27,13 +27,15 @@ public class ArchonDefault extends Mood {
 	};
 	//	The likeliness of building each robot type out of 128
 	static final int[] priorityLevels = {
-			50,
-			50,
+			0,
+			128,
 			10,
 			10,
 			8
 	};
 	RobotType lastSpawned, toSpawn;
+	
+	boolean ready;
 
     public ArchonDefault(RobotController rc) {
         super(rc);
@@ -44,9 +46,16 @@ public class ArchonDefault extends Mood {
     public void update() {
         super.update();
         
-        //	Only prepare for building if it can build
-        if (rc.isCoreReady())
-        {
+        ready = rc.isCoreReady();
+    }
+
+    @Override
+    public void act() throws Exception {
+    	if (ready)
+    	{
+    		
+    		
+        	//Building logic
 	        lastSpawned = toSpawn;
 	        
 	        //	Determine where to spawn next
@@ -61,13 +70,7 @@ public class ArchonDefault extends Mood {
 		        }
 		        next -= priorityLevels[i++];
 	        }
-        }
-    }
-
-    @Override
-    public void act() throws Exception {
-    	if (rc.isCoreReady())
-    	{
+	        
     		//	Build. Goes in order of direction looking for place to build
     		for (Direction d: directions)
     		{
