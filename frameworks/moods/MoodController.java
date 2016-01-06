@@ -20,7 +20,7 @@ public class MoodController {
         m=initialMood;
     }
     
-    public final void run() {
+    public final void run() throws Exception {
         m.update();
         Mood swung = m.swing();
         if (swung != null && m.getClass() != swung.getClass()) {
