@@ -19,13 +19,19 @@ public class SoloAttack extends Mood
 
     int attackRangeSquared, sensorRangeSquared;
     MovementController mc;
-
+    RobotInfo[] hostile;
     public SoloAttack(RobotController rc)
     {
         super(rc);
         attackRangeSquared = RobotType.GUARD.attackRadiusSquared;
         sensorRangeSquared = RobotType.GUARD.sensorRadiusSquared;
         mc = new MovementController(rc);
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        hostile=rc.senseHostileRobots(me, sensorRangeSquared);
     }
 
     @Override
@@ -36,22 +42,22 @@ public class SoloAttack extends Mood
         if (rc.isCoreReady())
         {
 
-            RobotInfo[] robots = rc.senseNearbyRobots(sensorRangeSquared, team.opponent());
-            rc.setIndicatorString(0, "Robots: " + robots.length);
+
+            rc.setIndicatorString(0, "Robots: " + hostile.length);
 
             RobotInfo closest = null;
             MapLocation closestLocation = null, checkLocation;
             int distance = Integer.MAX_VALUE, checkDistance, x, y;
-            for (int i = 0; i < robots.length; i++)
+            for (int i = 0; i < hostile.length; i++)
             {
-                checkLocation = robots[i].location;
+                checkLocation = hostile[i].location;
                 System.out.println(me + " " + checkLocation);
                 x = me.x - checkLocation.x;
                 y = me.y - checkLocation.y;
                 checkDistance = x * x + y * y;
                 if (checkDistance < distance)
                 {
-                    closest = robots[i];
+                    closest = hostile[i];
                     closestLocation = checkLocation;
                     distance = checkDistance;
                 }
@@ -93,9 +99,7 @@ public class SoloAttack extends Mood
     @Override
     public Mood swing()
     {
-        //  Can save the result to prevent redundant calculations
-        RobotInfo[] robots = rc.senseHostileRobots(me, sensorRangeSquared);
-        if (0 == robots.length)
+        if (0 == hostile.length)
         {
             return new Standby(rc);
         }

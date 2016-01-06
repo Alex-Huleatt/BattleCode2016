@@ -7,11 +7,12 @@ import battlecode.common.MapLocation;
  */
 public class SignalInfo {
 
-    public MapLocation from;
-    public MapLocation locArg;
+    public MapLocation senderLoc;
+    public MapLocation targetLoc;
     public SignalType type;
     public int senderID;
-    public int idArg;
+    public int targetID;
+    public int priority=0;
 
     public SignalInfo() { }
 

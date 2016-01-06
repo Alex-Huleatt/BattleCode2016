@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class Potential {
 
     private RobotController rc;
-    private HashMap<RobotType, Double> costs;
+    public HashMap<RobotType, Double> costs;
     private final double rubbleMult;
 
     public Potential(RobotController rc, RobotType[] types, double[] robCosts, double rubbleMult) {
@@ -25,7 +25,7 @@ public class Potential {
         this.rubbleMult=rubbleMult;
     }
 
-    public MapLocation findMin() {
+    public MapLocation findMin(double[] init_costs) {
         RobotInfo[] nearby_units = rc.senseNearbyRobots();
         int[] adj_costs = new int[8];
         MapLocation me = rc.getLocation();
@@ -37,7 +37,7 @@ public class Potential {
         int mindex = 0;
         double min_cost = Double.POSITIVE_INFINITY;
         for (int i = 0; i < 8; i++) {
-            double temp_cost = adj_costs[i] * rc.senseRubble(me.add(Common.directions[i]))*rubbleMult;
+            double temp_cost = adj_costs[i] * rc.senseRubble(me.add(Common.directions[i]))*rubbleMult + init_costs[i];
             if (temp_cost < min_cost) {
                 mindex=i;
                 min_cost = temp_cost;
