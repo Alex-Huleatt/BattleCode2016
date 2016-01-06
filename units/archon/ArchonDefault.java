@@ -74,7 +74,7 @@ public class ArchonDefault extends Mood {
     		//	Build. Goes in order of direction looking for place to build
     		for (Direction d: directions)
     		{
-	    		if (rc.canBuild(d, toSpawn))
+	    		if (rc.hasBuildRequirements(toSpawn) && rc.canBuild(d, toSpawn))
 	    		{
 	    			rc.build(d, toSpawn);
 	    			break;
