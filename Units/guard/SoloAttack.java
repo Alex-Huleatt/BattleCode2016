@@ -11,14 +11,16 @@ import team018.frameworks.movement.MovementController;
 
 /**
  * Created by alexhuleatt on 1/4/16.
+ *
+ * Update by Todd
  */
-public class GuardDefault extends Mood
+public class SoloAttack extends Mood
 {
     MapLocation myLocation;
     int attackRangeSquared, sensorRangeSquared;
     MovementController mc;
 
-    public GuardDefault(RobotController rc)
+    public SoloAttack(RobotController rc)
     {
         super(rc);
         attackRangeSquared = RobotType.GUARD.attackRadiusSquared;
@@ -57,8 +59,13 @@ public class GuardDefault extends Mood
                     distance = checkDistance;
                 }
             }
-            // Make sure it found something
-            if (closest != null)
+            // It found nothing. Go back to rally point
+            if (closest == null)
+            {
+
+            }
+            //
+            else
             {
                 rc.setIndicatorString(1, "Targetting " + closest.location.toString());
                 if (rc.canAttackLocation(closestLocation))
@@ -83,5 +90,18 @@ public class GuardDefault extends Mood
                 }
             }
         }
+    }
+
+
+    @Override
+    public Mood swing()
+    {
+        //  Can save the result to prevent redundant calculations
+        RobotInfo[] robots = rc.senseHostileRobots(myLocation, sensorRangeSquared);
+        if (0 == robots.length)
+        {
+            return new Standby(rc);
+        }
+        return null;
     }
 }
