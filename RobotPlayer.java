@@ -3,7 +3,8 @@ package team018;
 import battlecode.common.RobotController;
 import team018.units.Unit;
 import team018.units.archon.ArchonDefault;
-import team018.units.guard.GuardDefault;
+import team018.units.guard.SoloAttack;
+import team018.units.guard.Standby;
 import team018.units.scout.ScoutDefault;
 
 
@@ -30,7 +31,7 @@ public class RobotPlayer {
 				return;
 			}
 			case GUARD: {
-				new Unit(rc, new GuardDefault(rc)).run();
+				new Unit(rc, new Standby(rc)).run();
 				return;
 			}
 			case SCOUT: {

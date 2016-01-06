@@ -25,6 +25,7 @@ public class MoodController {
         Mood swung = m.swing();
         if (swung != null && m.getClass() != swung.getClass()) {
             m = swung;
+            m.update();
         }
         m.act();
     }

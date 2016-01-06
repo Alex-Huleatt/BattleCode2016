@@ -11,24 +11,21 @@ import team018.frameworks.movement.MovementController;
 
 /**
  * Created by alexhuleatt on 1/4/16.
+ *
+ * Update by Todd
  */
-public class GuardDefault extends Mood
+public class SoloAttack extends Mood
 {
-    MapLocation myLocation;
+
     int attackRangeSquared, sensorRangeSquared;
     MovementController mc;
 
-    public GuardDefault(RobotController rc)
+    public SoloAttack(RobotController rc)
     {
         super(rc);
         attackRangeSquared = RobotType.GUARD.attackRadiusSquared;
         sensorRangeSquared = RobotType.GUARD.sensorRadiusSquared;
         mc = new MovementController(rc);
-    }
-
-    public void update()
-    {
-        myLocation = rc.getLocation();
     }
 
     @Override
@@ -48,8 +45,9 @@ public class GuardDefault extends Mood
             for (int i = 0; i < robots.length; i++)
             {
                 checkLocation = robots[i].location;
-                x = myLocation.x - checkLocation.x;
-                y = myLocation.y - checkLocation.y;
+                System.out.println(me + " " + checkLocation);
+                x = me.x - checkLocation.x;
+                y = me.y - checkLocation.y;
                 checkDistance = x * x + y * y;
                 if (checkDistance < distance)
                 {
@@ -58,8 +56,13 @@ public class GuardDefault extends Mood
                     distance = checkDistance;
                 }
             }
-            // Make sure it found something
-            if (closest != null)
+            // It found nothing. Go back to rally point
+            if (closest == null)
+            {
+
+            }
+            //
+            else
             {
                 rc.setIndicatorString(1, "Targetting " + closest.location.toString());
                 if (rc.canAttackLocation(closestLocation))
@@ -68,14 +71,14 @@ public class GuardDefault extends Mood
                 }
                 else
                 {
-                    Direction direction = myLocation.directionTo(closestLocation);
+                    Direction direction = me.directionTo(closestLocation);
                     if (rc.canMove(direction))
                     {
                         rc.move(direction);
                     }
                     else
                     {
-                        MapLocation destination = myLocation.add(direction);
+                        MapLocation destination = me.add(direction);
                         if (GameConstants.RUBBLE_OBSTRUCTION_THRESH < rc.senseRubble(destination))
                         {
                             rc.clearRubble(direction);
@@ -84,5 +87,18 @@ public class GuardDefault extends Mood
                 }
             }
         }
+    }
+
+
+    @Override
+    public Mood swing()
+    {
+        //  Can save the result to prevent redundant calculations
+        RobotInfo[] robots = rc.senseHostileRobots(me, sensorRangeSquared);
+        if (0 == robots.length)
+        {
+            return new Standby(rc);
+        }
+        return null;
     }
 }
