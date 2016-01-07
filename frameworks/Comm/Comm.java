@@ -15,7 +15,7 @@ public class Comm {
         this.rc = rc;
     }
 
-    public void sendSignal(SignalInfo si) {
+    public void sendSignal(SignalInfo si, int radSqrd) throws Exception {
         //serialize signalinfo
 
         //4 bits for sig
@@ -34,11 +34,11 @@ public class Comm {
         f1 |= (rel << (32-16-4));
         f1 |= typ;
 
-        Signal s = new Signal(me, rc.getID(), rc.getTeam(), f1, 0);
-
+        rc.broadcastMessageSignal(f1,0,radSqrd);
     }
 
-    public SignalInfo receiveSignal(Signal s) {
+    public SignalInfo receiveSignal() {
+        Signal s = rc.readSignal();
         SignalInfo si = new SignalInfo();
         int[] details = s.getMessage();
         if (details != null) {
