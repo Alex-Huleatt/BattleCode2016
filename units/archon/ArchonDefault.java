@@ -1,11 +1,11 @@
 package team018.units.archon;
 
-import java.util.Random;
-
 import battlecode.common.Direction;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
 import team018.frameworks.moods.Mood;
+
+import java.util.Random;
 
 /**
  * Created by alexhuleatt on 1/4/16.
@@ -28,7 +28,7 @@ public class ArchonDefault extends Mood
     };
     //	The likeliness of building each robot type out of 128
     static final int[] priorityLevels = {
-            0,
+            200,
             128,
             10,
             10,

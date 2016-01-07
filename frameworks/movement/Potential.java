@@ -14,13 +14,15 @@ import java.util.HashMap;
 public class Potential {
 
     private RobotController rc;
-    public HashMap<RobotType, Double> costs;
+    public HashMap<RobotType, Double> en_map;
+    public HashMap<RobotType, Double> ally_map;
     private final double rubbleMult;
 
-    public Potential(RobotController rc, RobotType[] types, double[] robCosts, double rubbleMult) {
+    public Potential(RobotController rc, RobotType[] types, double[] enCosts, double[] allyCosts, double rubbleMult) {
         this.rc = rc;
         for (int i = 0; i < types.length; i++) {
-            costs.put(types[i], robCosts[i]);
+            en_map.put(types[i], enCosts[i]);
+            ally_map.put(types[i], allyCosts[i]);
         }
         this.rubbleMult=rubbleMult;
     }
@@ -31,14 +33,22 @@ public class Potential {
         MapLocation me = rc.getLocation();
         for (RobotInfo r : nearby_units) {
             for (int i = 0; i < 8; i++){
-                adj_costs[i] -= costs.get(r.type)/Math.sqrt(me.distanceSquaredTo(r.location)) * ((r.team == rc.getTeam())?1:-1);
+                if (r.team != rc.getTeam()) {
+                    if (en_map.containsKey(r.type)) {
+                        adj_costs[i] += en_map.get(r.type);
+                    }
+                } else {
+                    if (ally_map.containsKey(r.type)) {
+                        adj_costs[i]-=ally_map.get(r.type);
+                    }
+                }
             }
         }
         int mindex = 0;
         double min_cost = Double.POSITIVE_INFINITY;
         for (int i = 0; i < 8; i++) {
             double temp_cost = adj_costs[i] * rc.senseRubble(me.add(Common.directions[i]))*rubbleMult + init_costs[i];
-            if (temp_cost < min_cost) {
+            if (temp_cost < min_cost && rc.canMove(Common.directions[i])) {
                 mindex=i;
                 min_cost = temp_cost;
             }

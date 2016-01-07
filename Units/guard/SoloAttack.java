@@ -46,7 +46,8 @@ public class SoloAttack extends Mood
             rc.setIndicatorString(0, "Robots: " + hostile.length);
 
             RobotInfo closest = null;
-            MapLocation closestLocation = null, checkLocation;
+            MapLocation closestLocation = null;
+            MapLocation checkLocation;
             int distance = Integer.MAX_VALUE, checkDistance, x, y;
             for (int i = 0; i < hostile.length; i++)
             {
