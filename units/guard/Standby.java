@@ -7,7 +7,7 @@ import team018.frameworks.movement.MovementController;
 /**
  * Created by alexhuleatt on 1/4/16.
  *
- * Update by Todd
+ * Update by Todd - Guards and Soldiers should both be able to use this
  */
 public class Standby extends Mood
 {
@@ -19,7 +19,7 @@ public class Standby extends Mood
     public Standby(RobotController rc)
     {
         super(rc);
-        sensorRangeSquared = RobotType.GUARD.sensorRadiusSquared;
+        sensorRangeSquared = rc.getType().sensorRadiusSquared;
         mc = new MovementController(rc);
     }
 

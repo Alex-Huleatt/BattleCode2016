@@ -12,7 +12,7 @@ import team018.frameworks.movement.MovementController;
 /**
  * Created by alexhuleatt on 1/4/16.
  *
- * Update by Todd
+ * Update by Todd - Guards and Soldiers should both be able to use this
  */
 public class SoloAttack extends Mood
 {
@@ -24,8 +24,9 @@ public class SoloAttack extends Mood
     public SoloAttack(RobotController rc)
     {
         super(rc);
-        attackRangeSquared = RobotType.GUARD.attackRadiusSquared;
-        sensorRangeSquared = RobotType.GUARD.sensorRadiusSquared;
+        RobotType type = rc.getType();
+        attackRangeSquared = type.attackRadiusSquared;
+        sensorRangeSquared = type.sensorRadiusSquared;
         mc = new MovementController(rc);
     }
 
