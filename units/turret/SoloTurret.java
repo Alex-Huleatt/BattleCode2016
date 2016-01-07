@@ -1,11 +1,6 @@
-package team018.units.guard;
+package team018.units.turret;
 
-import battlecode.common.Direction;
-import battlecode.common.GameConstants;
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
-import battlecode.common.RobotInfo;
-import battlecode.common.RobotType;
+import battlecode.common.*;
 import team018.frameworks.moods.Mood;
 import team018.frameworks.movement.MovementController;
 
@@ -14,19 +9,21 @@ import team018.frameworks.movement.MovementController;
  *
  * Update by Todd - Guards and Soldiers should both be able to use this
  */
-public class SoloAttack extends Mood
+public class SoloTurret extends Mood
 {
 
     int attackRangeSquared, // unused
-        sensorRangeSquared;
+        sensorRangeSquared,
+        attackRangeMin;
     MovementController mc;
     RobotInfo[] hostile;
-    public SoloAttack(RobotController rc)
+    public SoloTurret(RobotController rc)
     {
         super(rc);
         RobotType type = rc.getType();
-        attackRangeSquared = type.attackRadiusSquared;
-        sensorRangeSquared = type.sensorRadiusSquared;
+        attackRangeSquared = RobotType.TURRET.attackRadiusSquared;
+        sensorRangeSquared = RobotType.TURRET.sensorRadiusSquared;
+        attackRangeMin  = GameConstants.TURRET_MINIMUM_RANGE;
         mc = new MovementController(rc);
     }
 
@@ -57,44 +54,24 @@ public class SoloAttack extends Mood
                 x = me.x - checkLocation.x;
                 y = me.y - checkLocation.y;
                 checkDistance = x * x + y * y;
-                if (checkDistance < distance)
+                //  Turrets have a minimum attacking range, so don't bother
+                //  with any enemies that might be closer
+                if (checkDistance < distance && attackRangeMin <= distance)
                 {
                     closest = hostile[i];
                     closestLocation = checkLocation;
                     distance = checkDistance;
                 }
             }
-            // It found nothing. Go back to rally point
-            if (closest == null)
-            {
-
-            }
-            //
-            else
+            if (closest != null)
             {
                 rc.setIndicatorString(1, "Targetting " + closest.location.toString());
                 if (rc.canAttackLocation(closestLocation))
                 {
                     rc.attackLocation(closestLocation);
                 }
-                else
-                {
-                    Direction direction = me.directionTo(closestLocation);
-                    if (rc.canMove(direction))
-                    {
-                        rc.move(direction);
-                    }
-                    else
-                    {
-                        mc.bug(me.add(direction));
-//                        MapLocation destination = me.add(direction);
-//                        if (GameConstants.RUBBLE_OBSTRUCTION_THRESH < rc.senseRubble(destination))
-//                        {
-//                            rc.clearRubble(direction);
-//                        }
-                    }
-                }
             }
+            //  Turrets can't move, so there's nothing else to do in SoloTurret mode.
         }
     }
 
@@ -102,10 +79,7 @@ public class SoloAttack extends Mood
     @Override
     public Mood swing()
     {
-        if (0 == hostile.length)
-        {
-            return new Standby(rc);
-        }
+        //  In the future this should allow for GroupAttack mood
         return null;
     }
 }

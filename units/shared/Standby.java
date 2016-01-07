@@ -1,4 +1,4 @@
-package team018.units.guard;
+package team018.units.shared;
 
 import battlecode.common.*;
 import team018.frameworks.moods.Mood;

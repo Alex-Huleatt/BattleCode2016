@@ -3,9 +3,9 @@ package team018;
 import battlecode.common.RobotController;
 import team018.units.Unit;
 import team018.units.archon.ArchonDefault;
-import team018.units.guard.SoloAttack;
-import team018.units.guard.Standby;
+import team018.units.shared.Standby;
 import team018.units.scout.ScoutDefault;
+import team018.units.turret.SoloTurret;
 
 
 public class RobotPlayer
@@ -42,6 +42,7 @@ public class RobotPlayer
             }
             case GUARD:
             case SOLDIER:
+            case VIPER:
             {
                 new Unit(rc, new Standby(rc)).run();
                 return;
@@ -51,8 +52,9 @@ public class RobotPlayer
                 new Unit(rc, new ScoutDefault(rc)).run();
                 return;
             }
-            default:
+            case TURRET:
             {
+                new Unit(rc, new SoloTurret(rc)).run();
                 return;
             }
         }
