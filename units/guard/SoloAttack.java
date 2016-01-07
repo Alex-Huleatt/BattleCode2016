@@ -41,7 +41,7 @@ public class SoloAttack extends Mood
     {
 
         // If it can attack, try!
-        if (rc.isCoreReady())
+        if (rc.isCoreReady() && rc.isWeaponReady())
         {
 
 

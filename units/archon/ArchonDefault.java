@@ -29,10 +29,10 @@ public class ArchonDefault extends Mood
     //	The likeliness of building each robot type out of 128
     static final int[] priorityLevels = {
             0,
-            128,
-            10,
-            10,
-            8
+            64,
+            0,
+            0,
+            64
     };
     RobotType lastSpawned, toSpawn;
 
