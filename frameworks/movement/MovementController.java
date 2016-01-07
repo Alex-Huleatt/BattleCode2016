@@ -55,6 +55,7 @@ public class MovementController {
     private Random rand;
     public MovementController(RobotController rc) {
         this.rc = rc;
+        rand = new Random(rc.getID());
     }
 
     public void logObstacle(MapLocation ob) {
