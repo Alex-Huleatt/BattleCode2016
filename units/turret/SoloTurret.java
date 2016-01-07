@@ -50,7 +50,6 @@ public class SoloTurret extends Mood
             for (int i = 0; i < hostile.length; i++)
             {
                 checkLocation = hostile[i].location;
-                System.out.println(me + " " + checkLocation);
                 x = me.x - checkLocation.x;
                 y = me.y - checkLocation.y;
                 checkDistance = x * x + y * y;
