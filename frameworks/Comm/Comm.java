@@ -44,14 +44,15 @@ public class Comm {
         if (details != null) {
             int f1 = details[0];
 
-            if ((f1 & 0x3000000) == 0x3000000) {
+            if ((f1 & 0xF000000) == 0x3000000) {
                 int typ = f1 & 0x0000000F;
                 if (typ < SignalType.values().length) {
                     si.type = SignalType.values()[typ];
                 }
                 f1 >>= 4;
-
-                si.targetLoc = Common.intToLoc(f1);
+                MapLocation rel_loc = Common.intToLoc(f1);
+                MapLocation send_loc = s.getLocation();
+                si.targetLoc = new MapLocation(rel_loc.x+send_loc.x, rel_loc.y + send_loc.y);
             }
         }
         return si;
