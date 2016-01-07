@@ -1,4 +1,4 @@
-package team018.frameworks.Comm;
+package team018.frameworks.comm;
 
 import battlecode.common.MapLocation;
 
@@ -7,12 +7,9 @@ import battlecode.common.MapLocation;
  */
 public class SignalInfo {
 
-    public MapLocation senderLoc;
-    public MapLocation targetLoc;
-    public SignalType type;
-    public int senderID;
-    public int targetID;
-    public int priority=0;
+    public MapLocation targetLoc = new MapLocation(-1,-1);
+    public SignalType type = SignalType.DEFAULT;
+    public short priority=0;
 
     public SignalInfo() { }
 

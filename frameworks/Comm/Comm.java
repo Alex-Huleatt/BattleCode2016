@@ -1,0 +1,63 @@
+package team018.frameworks.comm;
+
+import battlecode.common.MapLocation;
+import battlecode.common.RobotController;
+import battlecode.common.Signal;
+import team018.frameworks.util.Common;
+
+/**
+ * Created by alexhuleatt on 1/6/16.
+ */
+public class Comm {
+
+    RobotController rc;
+    public Comm(RobotController rc) {
+        this.rc = rc;
+    }
+
+    public void sendSignal(SignalInfo si) {
+        //serialize signalinfo
+
+        //4 bits for sig
+        //4 bits for type.
+        //8 bits for relative target x.
+        //8 bits for relative target y.
+
+        MapLocation me = rc.getLocation();
+        MapLocation targ = si.targetLoc;
+
+        int rel = Common.locToInt(new MapLocation(targ.x-me.x,targ.y-me.y)); //16 bits
+        int typ = si.type.ordinal(); //4 bits
+        int f1=0;
+
+        f1 |= 0x3000000;
+        f1 |= (rel << (32-16-4));
+        f1 |= typ;
+
+        Signal s = new Signal(me, rc.getID(), rc.getTeam(), f1, 0);
+
+    }
+
+    public SignalInfo receiveSignal(Signal s) {
+        SignalInfo si = new SignalInfo();
+        int[] details = s.getMessage();
+        if (details != null) {
+            int f1 = details[0];
+
+            if ((f1 & 0x3000000) == 0x3000000) {
+                int typ = f1 & 0x0000000F;
+                if (typ < SignalType.values().length) {
+                    si.type = SignalType.values()[typ];
+                }
+                f1 >>= 4;
+
+                si.targetLoc = Common.intToLoc(f1);
+            }
+        }
+        return si;
+
+    }
+
+
+
+}
