@@ -42,10 +42,6 @@ public class SoloAttack extends Mood
         // If it can attack, try!
         if (rc.isCoreReady() && rc.isWeaponReady())
         {
-
-
-            rc.setIndicatorString(0, "Robots: " + hostile.length);
-
             RobotInfo closest = null;
             MapLocation closestLocation = null, checkLocation;
             int distance = Integer.MAX_VALUE, checkDistance, x, y;
@@ -66,12 +62,11 @@ public class SoloAttack extends Mood
             // It found nothing. Go back to rally point
             if (closest == null)
             {
-
+                //  TODO
             }
-            //
+            // It found targets
             else
             {
-                rc.setIndicatorString(1, "Targetting " + closest.location.toString());
                 if (rc.canAttackLocation(closestLocation))
                 {
                     rc.attackLocation(closestLocation);
@@ -86,6 +81,8 @@ public class SoloAttack extends Mood
                     else
                     {
                         mc.bug(me.add(direction));
+                        //  Don't clear rubble unnecessarily
+
 //                        MapLocation destination = me.add(direction);
 //                        if (GameConstants.RUBBLE_OBSTRUCTION_THRESH < rc.senseRubble(destination))
 //                        {

@@ -2,9 +2,7 @@ package team018.units.archon;
 
 import java.util.Random;
 
-import battlecode.common.Direction;
-import battlecode.common.RobotController;
-import battlecode.common.RobotType;
+import battlecode.common.*;
 import team018.frameworks.moods.Mood;
 
 /**
@@ -15,8 +13,11 @@ import team018.frameworks.moods.Mood;
  */
 public class ArchonDefault extends Mood
 {
-    Random rand;
     static final Direction[] directions = Direction.values();
+    Team us;
+    int sensorRadiusSquared;
+    Random rand;
+
 
     //	The highest-to-lowest preferences of robots to build
     static final RobotType[] robotPriorities = {
@@ -42,6 +43,8 @@ public class ArchonDefault extends Mood
     {
         super(rc);
         rand = new Random(rc.getID());
+        us = rc.getTeam();
+        sensorRadiusSquared = RobotType.ARCHON.sensorRadiusSquared;
     }
 
     @Override
@@ -81,7 +84,27 @@ public class ArchonDefault extends Mood
                 if (rc.hasBuildRequirements(toSpawn) && rc.canBuild(d, toSpawn))
                 {
                     rc.build(d, toSpawn);
-                    break;
+                    return;
+                }
+            }
+
+            //  if nothing was built, try repairing allies
+            RobotInfo[] allies = rc.senseNearbyRobots(sensorRadiusSquared, us);
+            int x, y;
+            MapLocation location;
+            for (RobotInfo robot: allies)
+            {
+                //  Don't waste time repairing full-health allies
+                if (robot.health < robot.type.maxHealth)
+                {
+                    location = robot.location;
+                    x = me.x - location.x;
+                    y = me.y - location.y;
+                    if (x * x + y * y <= 2)
+                    {
+                        rc.repair(location);
+                        return;
+                    }
                 }
             }
         }
