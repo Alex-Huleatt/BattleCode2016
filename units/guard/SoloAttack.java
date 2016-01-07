@@ -17,7 +17,8 @@ import team018.frameworks.movement.MovementController;
 public class SoloAttack extends Mood
 {
 
-    int attackRangeSquared, sensorRangeSquared;
+    int attackRangeSquared, // unused
+        sensorRangeSquared;
     MovementController mc;
     RobotInfo[] hostile;
     public SoloAttack(RobotController rc)
@@ -84,11 +85,12 @@ public class SoloAttack extends Mood
                     }
                     else
                     {
-                        MapLocation destination = me.add(direction);
-                        if (GameConstants.RUBBLE_OBSTRUCTION_THRESH < rc.senseRubble(destination))
-                        {
-                            rc.clearRubble(direction);
-                        }
+                        mc.bug(me.add(direction));
+//                        MapLocation destination = me.add(direction);
+//                        if (GameConstants.RUBBLE_OBSTRUCTION_THRESH < rc.senseRubble(destination))
+//                        {
+//                            rc.clearRubble(direction);
+//                        }
                     }
                 }
             }
