@@ -67,7 +67,13 @@ public class Common {
         }
         return true;
     }
-    
+
+    public static void basicMove(RobotController rc, MapLocation m) throws Exception {
+        Direction d = rc.getLocation().directionTo(m);
+        if (rc.canMove(d) && rc.isCoreReady()) {
+            rc.move(d);
+        }
+    }
     
 
     public static boolean isObstacle(RobotController rc, int dir) throws Exception {

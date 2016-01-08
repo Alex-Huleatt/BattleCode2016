@@ -16,4 +16,9 @@ public class ScoutDefault extends Mood {
     public void act() {
 
     }
+
+    @Override
+    public Mood swing() {
+        return new Explore(rc);
+    }
 }
