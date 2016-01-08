@@ -54,17 +54,19 @@ public class Explore extends Mood {
         }
         //System.out.println(Arrays.toString(adj_costs));
         MapLocation best = p.findMin(adj_costs);
-        avgX+=best.x;
-        avgY+=best.y;
-        moves++;
-        if (moves > 30) {
-            avgX = me.x;
-            avgY = me.y;
-            moves = 1;
+        if (best != null) {
+            avgX += best.x;
+            avgY += best.y;
+            moves++;
+            if (moves > 30) {
+                avgX = me.x;
+                avgY = me.y;
+                moves = 1;
 
+            }
+            Common.basicMove(rc, best);
+            rc.setIndicatorString(0, best.toString());
         }
-        Common.basicMove(rc,best);
-        rc.setIndicatorString(0,best.toString());
 
     }
 

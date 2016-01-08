@@ -30,6 +30,7 @@ public class Potential {
         double[] adj_costs = init_costs;
         MapLocation me = rc.getLocation();
         MapLocation temp;
+        if (!rc.isCoreReady()) return null;
         for (RobotInfo r : nearby_units) {
             temp = r.location;
             for (int i = 0; i < 8; i++){
@@ -42,7 +43,7 @@ public class Potential {
             }
         }
         int dir = 0;
-        while (!rc.canMove(Common.directions[dir]) && dir < 8) dir++;
+        while (dir < 8 &&!rc.canMove(Common.directions[dir])) dir++;
         if (dir == 8) return null;
         int mindex = 0;
         double min_cost =adj_costs[dir] + rc.senseRubble(me.add(Common.directions[dir]))*rubbleMult;
