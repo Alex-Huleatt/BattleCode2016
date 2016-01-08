@@ -56,6 +56,8 @@ public class Comm {
                 MapLocation send_loc = s.getLocation();
                 si.targetLoc = new MapLocation(rel_loc.x+send_loc.x, rel_loc.y + send_loc.y);
             }
+
+            si.data = details[1];
         }
         si.senderLoc=s.getLocation();
         si.senderTeam=s.getTeam();

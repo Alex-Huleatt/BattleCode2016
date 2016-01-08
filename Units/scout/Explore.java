@@ -94,7 +94,7 @@ public class Explore extends Mood {
 
         for (RobotInfo ri : nearby) {
             if (ri.type == RobotType.ZOMBIEDEN || (ri.type==RobotType.ARCHON&&ri.team!=team)) {
-                
+
                 SignalInfo si = new SignalInfo();
                 si.type= SignalType.FOUND_ROBOT;
                 si.targetLoc = ri.location;
