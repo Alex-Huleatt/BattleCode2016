@@ -5,5 +5,5 @@ package team018.frameworks.comm;
  */
 public enum SignalType {
 
-    ATTACK, RUN_AWAY, STANDBY, PATROL, EXPLORE, HALP, DEFAULT
+    ATTACK, RUN_AWAY, STANDBY, PATROL, EXPLORE, HALP, DEFAULT, FOUND_PARTS, FOUND_ROBOT
 }

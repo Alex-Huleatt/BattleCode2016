@@ -34,7 +34,9 @@ public class Comm {
         f1 |= (rel << (32-16-4));
         f1 |= typ;
 
-        rc.broadcastMessageSignal(f1,0,radSqrd);
+
+
+        rc.broadcastMessageSignal(f1,si.data,radSqrd);
     }
 
     public SignalInfo receiveSignal() {

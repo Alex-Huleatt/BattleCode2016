@@ -17,6 +17,7 @@ public class Timer {
     public int start_round;
     public int elaps;
     public boolean stopped;
+    public int max_bytecode = 20000;
 
     public Timer() {
         elaps = 0;
