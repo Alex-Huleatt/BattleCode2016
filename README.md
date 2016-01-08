@@ -1,5 +1,32 @@
 # BattleCode2016
 
+## Signaling system
+
+### comm.Comm
+Has sendSignal and receiveSignal functions.
+sendSignal takes a Comm.SignalInfo object and receiveSignal (hopefully) returns a SignalInfo object.
+
+### comm.SignalInfo
+Has a bunch of fields that get serialized and deserialized.
+* SignalType is the type of signal (comm.SignalType is enum)
+* targetLoc is the location the signal is referencing.
+
+### comm.SignalType
+Bunch of types of signals pretty straightforwards, names are descriptive.
+
+###Usage.
+
+You do 
+
+``` Java
+SignalInfo si = new SignalInfo();
+si.type = SignalType.HALP;
+si.targetLoc = me;
+
+c.sendSignal(si, 10); //10 is radius
+```
+
+
 
 ## Battle plan
 

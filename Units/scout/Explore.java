@@ -93,19 +93,16 @@ public class Explore extends Mood {
         }
 
         for (RobotInfo ri : nearby) {
-            if (ri.type == RobotType.ZOMBIEDEN || (ri.type==RobotType.ARCHON&&ri.team!=team)) {
+            if (ri.type == RobotType.ZOMBIEDEN || (ri.type == RobotType.ARCHON && ri.team != team)) {
 
                 SignalInfo si = new SignalInfo();
-                si.type= SignalType.FOUND_ROBOT;
+                si.type = SignalType.FOUND_ROBOT;
                 si.targetLoc = ri.location;
                 si.data = ri.type.ordinal();
 
                 c.sendSignal(si, 10);
             }
-        }
-
-
-
+        }t
     }
 
     @Override
