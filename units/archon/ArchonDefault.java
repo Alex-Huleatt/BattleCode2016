@@ -36,7 +36,7 @@ public class ArchonDefault extends Mood
             SignalInfo si = new SignalInfo();
             si.type= SignalType.ARCHON_LOC;
             c.sendSignal(si, 2000);
-            loc_broadcast_cd = 30;
+            loc_broadcast_cd = 100;
             return false;
         } else {
             loc_broadcast_cd--;
@@ -60,6 +60,7 @@ public class ArchonDefault extends Mood
                 }
             }
         }
+        //System.out.println("Didn't have requirements.");
         return false;
     }
 
@@ -121,15 +122,13 @@ public class ArchonDefault extends Mood
             lastSpawned = toSpawn;
 
             //	Determine what to spawn next
-            int index = rand.nextInt() % 5;
-            toSpawn = robotTypes[index < 0 ? -1 * index : index];
+            int index = (rand.nextInt() % 5 + 5) % 5;
+            toSpawn = robotTypes[index];
 
             //  try to build
-            if (buildRobot(toSpawn))
-            {
-                //  Didn't build, so just heal
-                healAdjacent();
-            }
+            buildRobot(toSpawn);
+
+            healAdjacent();
         }
     }
 

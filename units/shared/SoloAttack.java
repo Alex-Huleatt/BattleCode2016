@@ -62,6 +62,7 @@ public class SoloAttack extends Mood
             // It found nothing. Go back to rally point
             if (closest == null)
             {
+                System.out.println("what");
                 //  TODO
             }
             // It found targets
