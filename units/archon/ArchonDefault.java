@@ -71,7 +71,7 @@ public class ArchonDefault extends Mood
             if (loc_broadcast_cd == 0) {
                 SignalInfo si = new SignalInfo();
                 si.type= SignalType.ARCHON_LOC;
-                c.sendSignal(si, 2000);
+                c.sendSignal(si, 10000);
                 loc_broadcast_cd = 30;
                 return;
             } else {

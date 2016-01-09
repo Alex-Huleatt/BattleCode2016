@@ -47,7 +47,6 @@ public class Comm {
                 int typ = f1 & 0x0000000F;
                 if (typ < SignalType.values().length) {
                     si.type = SignalType.values()[typ];
-                    System.out.println(si.type);
                 }
                 f1 >>= 4;
                 MapLocation rel_loc = Common.intToLoc(f1);

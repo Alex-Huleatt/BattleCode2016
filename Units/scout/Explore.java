@@ -44,7 +44,7 @@ public class Explore extends Mood {
         en_costs[RobotType.GUARD.ordinal()] = 1000;
         en_costs[RobotType.ZOMBIEDEN.ordinal()] = 1000;
         en_costs[RobotType.STANDARDZOMBIE.ordinal()] = 1000;
-        en_costs[RobotType.FASTZOMBIE.ordinal()] = 1000;
+        en_costs[RobotType.FASTZOMBIE.ordinal()] = Double.POSITIVE_INFINITY;
         en_costs[RobotType.BIGZOMBIE.ordinal()] = 1000;
         en_costs[RobotType.VIPER.ordinal()] = 1000;
         en_costs[RobotType.TURRET.ordinal()] = 1000;
@@ -95,12 +95,12 @@ public class Explore extends Mood {
             MapLocation t;
             for (int i = 0; i < 8; i++) {
                 t = me.add(Common.directions[i]);
-                adj_costs[i] = -2 * t.distanceSquaredTo(avg);
+                adj_costs[i] += 100.0/t.distanceSquaredTo(avg);
                 if (visited.get(t.hashCode())) {
                     adj_costs[i] += 100;
                 }
                 for (MapLocation m : archon_positions.values()) {
-                    adj_costs[i] += 10000 / t.distanceSquaredTo(m);
+                    adj_costs[i] += 300.0/t.distanceSquaredTo(m);
                 }
             }
 
