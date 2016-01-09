@@ -102,7 +102,7 @@ public class Explore extends Mood {
 
                 c.sendSignal(si, 10);
             }
-        }t
+        }
     }
 
     @Override
