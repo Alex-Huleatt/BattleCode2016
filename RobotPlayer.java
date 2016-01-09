@@ -3,6 +3,7 @@ package team018;
 import battlecode.common.RobotController;
 import team018.units.Unit;
 import team018.units.archon.ArchonDefault;
+import team018.units.archon.ArchonInitial;
 import team018.units.shared.Standby;
 import team018.units.scout.ScoutDefault;
 import team018.units.turret.SoloTurret;
@@ -38,7 +39,7 @@ public class RobotPlayer
         {
             case ARCHON:
             {
-                new Unit(rc, new ArchonDefault(rc)).run();
+                new Unit(rc, new ArchonInitial(rc)).run();
                 return;
             }
             case GUARD:

@@ -17,32 +17,82 @@ import java.util.Random;
 public class ArchonDefault extends Mood
 {
     static final Direction[] directions = Direction.values();
-    Team us;
-    int sensorRadiusSquared;
-    Random rand;
-    int loc_broadcast_cd;
-    Comm c;
 
+
+    Random rand;
+    Team us;
+    Comm c;
+    RobotType lastSpawned, toSpawn;
+
+    int sensorRadiusSquared;
+    int loc_broadcast_cd;
+    boolean ready;
+
+    //  returns false if broadcasted, true otherwise
+    //  Other way may be intuitive, but this saves one negation later
+    protected boolean broadcastLocation() throws Exception
+    {
+        if (loc_broadcast_cd == 0) {
+            SignalInfo si = new SignalInfo();
+            si.type= SignalType.ARCHON_LOC;
+            c.sendSignal(si, 2000);
+            loc_broadcast_cd = 30;
+            return false;
+        } else {
+            loc_broadcast_cd--;
+            return true;
+        }
+    }
+
+    //  returns false if built, true if not built
+    //  Other way may be intuitive, but this saves one negation later
+    protected boolean buildRobot(RobotType type) throws Exception
+    {
+        if (rc.hasBuildRequirements(type))
+        {
+            //	Build. Goes in order of direction looking for place to build
+            for (Direction d : directions)
+            {
+                if (rc.canBuild(d, type))
+                {
+                    rc.build(d, type);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected void healAdjacent() throws Exception
+    {
+        RobotInfo[] allies = rc.senseNearbyRobots(sensorRadiusSquared, us);
+        int x, y;
+        MapLocation location;
+        for (RobotInfo robot : allies)
+        {
+            //  Don't waste time repairing full-health allies
+            if (robot.health < robot.type.maxHealth)
+            {
+                location = robot.location;
+                x = me.x - location.x;
+                y = me.y - location.y;
+                if (x * x + y * y <= 2 && robot.type != RobotType.ARCHON)
+                {
+                    rc.repair(location);
+                    return;
+                }
+            }
+        }
+    }
 
     //	The highest-to-lowest preferences of robots to build
-    static final RobotType[] robotPriorities = {
+    static final RobotType[] robotTypes = {
             RobotType.SCOUT,
+            RobotType.SOLDIER,
             RobotType.GUARD,
             RobotType.VIPER,
             RobotType.TURRET,
-            RobotType.SOLDIER
     };
-    //	The likeliness of building each robot type out of 128
-    static final int[] priorityLevels = {
-            50,
-            32,
-            32,
-            32,
-            32
-    };
-    RobotType lastSpawned, toSpawn;
-
-    boolean ready;
 
     public ArchonDefault(RobotController rc)
     {
@@ -65,67 +115,22 @@ public class ArchonDefault extends Mood
     @Override
     public void act() throws Exception
     {
-        if (ready)
+        if (ready && broadcastLocation())
         {
-
-            if (loc_broadcast_cd == 0) {
-                SignalInfo si = new SignalInfo();
-                si.type= SignalType.ARCHON_LOC;
-                c.sendSignal(si, 10000);
-                loc_broadcast_cd = 30;
-                return;
-            } else {
-                loc_broadcast_cd--;
-            }
-
             //Building logic
             lastSpawned = toSpawn;
 
-            //	Determine where to spawn next
-            int next = rand.nextInt() & 127,
-                    i = 0;
-            while (-1 < next)
-            {
-                if (next < priorityLevels[i])
-                {
-                    toSpawn = robotPriorities[i];
-                    break;
-                }
-                next -= priorityLevels[i++];
-            }
+            //	Determine what to spawn next
+            int index = rand.nextInt() % 5;
+            toSpawn = robotTypes[index < 0 ? -1 * index : index];
 
-            //	Build. Goes in order of direction looking for place to build
-            for (Direction d : directions)
+            //  try to build
+            if (buildRobot(toSpawn))
             {
-                if (rc.hasBuildRequirements(toSpawn) && rc.canBuild(d, toSpawn))
-                {
-                    rc.build(d, toSpawn);
-                    return;
-                }
+                //  Didn't build, so just heal
+                healAdjacent();
             }
-
-            //  if nothing was built, try repairing allies
-            RobotInfo[] allies = rc.senseNearbyRobots(sensorRadiusSquared, us);
-            int x, y;
-            MapLocation location;
-            for (RobotInfo robot: allies)
-            {
-                //  Don't waste time repairing full-health allies
-                if (robot.health < robot.type.maxHealth)
-                {
-                    location = robot.location;
-                    x = me.x - location.x;
-                    y = me.y - location.y;
-                    if (x * x + y * y <= 2 && robot.type != RobotType.ARCHON)
-                    {
-                        rc.repair(location);
-                        return;
-                    }
-                }
-            }
-
         }
-
     }
 
     @Override
