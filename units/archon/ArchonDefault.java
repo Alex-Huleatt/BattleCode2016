@@ -1,6 +1,9 @@
 package team018.units.archon;
 
 import battlecode.common.*;
+import team018.frameworks.comm.Comm;
+import team018.frameworks.comm.SignalInfo;
+import team018.frameworks.comm.SignalType;
 import team018.frameworks.moods.Mood;
 
 import java.util.Random;
@@ -17,6 +20,8 @@ public class ArchonDefault extends Mood
     Team us;
     int sensorRadiusSquared;
     Random rand;
+    int loc_broadcast_cd;
+    Comm c;
 
 
     //	The highest-to-lowest preferences of robots to build
@@ -45,6 +50,8 @@ public class ArchonDefault extends Mood
         rand = new Random(rc.getID());
         us = rc.getTeam();
         sensorRadiusSquared = RobotType.ARCHON.sensorRadiusSquared;
+        loc_broadcast_cd=0;
+        c = new Comm(rc);
     }
 
     @Override
@@ -61,6 +68,15 @@ public class ArchonDefault extends Mood
         if (ready)
         {
 
+            if (loc_broadcast_cd == 0) {
+                SignalInfo si = new SignalInfo();
+                si.type= SignalType.ARCHON_LOC;
+                c.sendSignal(si, 2000);
+                loc_broadcast_cd = 30;
+                return;
+            } else {
+                loc_broadcast_cd--;
+            }
 
             //Building logic
             lastSpawned = toSpawn;
@@ -100,14 +116,16 @@ public class ArchonDefault extends Mood
                     location = robot.location;
                     x = me.x - location.x;
                     y = me.y - location.y;
-                    if (x * x + y * y <= 2)
+                    if (x * x + y * y <= 2 && robot.type != RobotType.ARCHON)
                     {
                         rc.repair(location);
                         return;
                     }
                 }
             }
+
         }
+
     }
 
     @Override

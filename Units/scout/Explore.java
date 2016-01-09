@@ -12,6 +12,7 @@ import team018.frameworks.movement.Potential;
 import team018.frameworks.util.Common;
 
 import java.util.BitSet;
+import java.util.HashMap;
 
 
 /**
@@ -25,6 +26,7 @@ public class Explore extends Mood {
     Potential p;
     BitSet visited;
     Comm c;
+    HashMap<Integer, MapLocation> archon_positions;
 
     RobotInfo[] nearby;
     public Explore(RobotController rc) {
@@ -51,6 +53,8 @@ public class Explore extends Mood {
         p = new Potential(rc, en_costs, al_costs, 0.0);
         visited = new BitSet();
         this.c = new Comm(rc);
+
+        archon_positions= new HashMap<>();
     }
 
     @Override
@@ -64,6 +68,28 @@ public class Explore extends Mood {
         visited.set(me.hashCode());
 
         if (rc.isCoreReady()) {
+            SignalInfo si;
+            while ((si=c.receiveSignal())!=null) {
+
+                if (si.type==SignalType.ARCHON_LOC) {
+                    archon_positions.put(si.robotID, si.senderLoc);
+                }
+            }
+
+
+            for (RobotInfo ri : nearby) {
+                if (ri.type == RobotType.ZOMBIEDEN || (ri.type == RobotType.ARCHON && ri.team != team)) {
+
+                    si = new SignalInfo();
+                    si.type = SignalType.FOUND_ROBOT;
+                    si.targetLoc = ri.location;
+                    si.data = ri.type.ordinal();
+
+                    c.sendSignal(si, 10);
+                }
+            }
+
+
             double[] adj_costs = new double[8];
             MapLocation avg = new MapLocation(avgX / moves, avgY / moves);
             MapLocation t;
@@ -73,10 +99,13 @@ public class Explore extends Mood {
                 if (visited.get(t.hashCode())) {
                     adj_costs[i] += 100;
                 }
-                if (rc.senseParts(t) > 0) {
-                    SignalInfo s = new SignalInfo();
+                for (MapLocation m : archon_positions.values()) {
+                    adj_costs[i] += 10000 / t.distanceSquaredTo(m);
                 }
             }
+
+
+
             MapLocation best = p.findMin(adj_costs);
             if (best != null) {
                 avgX += best.x;
@@ -92,17 +121,6 @@ public class Explore extends Mood {
             }
         }
 
-        for (RobotInfo ri : nearby) {
-            if (ri.type == RobotType.ZOMBIEDEN || (ri.type == RobotType.ARCHON && ri.team != team)) {
-
-                SignalInfo si = new SignalInfo();
-                si.type = SignalType.FOUND_ROBOT;
-                si.targetLoc = ri.location;
-                si.data = ri.type.ordinal();
-
-                c.sendSignal(si, 10);
-            }
-        }
     }
 
     @Override

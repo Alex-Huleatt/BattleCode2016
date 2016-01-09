@@ -25,31 +25,29 @@ public class Comm {
 
         MapLocation me = rc.getLocation();
         MapLocation targ = si.targetLoc;
-
         int rel = Common.locToInt(new MapLocation(targ.x-me.x,targ.y-me.y)); //16 bits
         int typ = si.type.ordinal(); //4 bits
         int f1=0;
 
-        f1 |= 0x3000000;
-        f1 |= (rel << (32-16-4));
+
+        f1 |= (rel << 4);
         f1 |= typ;
-
-
-
+        f1 &= (3 << 28)|0x0FFFFFFF;
         rc.broadcastMessageSignal(f1,si.data,radSqrd);
     }
 
     public SignalInfo receiveSignal() {
         Signal s = rc.readSignal();
+        if (s == null) return null;
         SignalInfo si = new SignalInfo();
         int[] details = s.getMessage();
         if (details != null) {
             int f1 = details[0];
-
-            if ((f1 & 0xF000000) == 0x3000000) {
+            if ((f1 >> 28) == 3) {
                 int typ = f1 & 0x0000000F;
                 if (typ < SignalType.values().length) {
                     si.type = SignalType.values()[typ];
+                    System.out.println(si.type);
                 }
                 f1 >>= 4;
                 MapLocation rel_loc = Common.intToLoc(f1);
