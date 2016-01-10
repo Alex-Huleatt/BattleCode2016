@@ -37,7 +37,7 @@ public class Standby extends Mood
 
         double[] en_costs = new double[RobotType.values().length];
         double[] al_costs = new double[RobotType.values().length];
-        p = new Potential(rc, en_costs, al_costs, 0);
+        p = new Potential(rc, en_costs, al_costs,true);
         c = new Comm(rc);
         me = rc.getLocation();
         avgX = me.x;
@@ -92,11 +92,12 @@ public class Standby extends Mood
                 distsqr=m.distanceSquaredTo(me);
             }
         }
+        //System.out.println(nearest);
         for (int i = 0; i < 8; i++) {
             MapLocation t = me.add(Common.directions[i]);
 
                 if (nearest != null) {
-                    double x = 100 * ((t.distanceSquaredTo(nearest)-35)/100);
+                    double x =  25*((t.distanceSquaredTo(nearest)-35)/25);
                     costs[i] += 1000.0 * x * x;
                     int vx1 = me.x-nearest.x;
                     int vy1 = me.y-nearest.y;

@@ -13,19 +13,19 @@ import java.util.Random;
 public class Potential {
 
     private RobotController rc;
-    private final double rubbleMult;
+    private final boolean rubble_bool;
     private double[] enCosts;
     private double[] allyCosts;
     private Random r;
-    public Potential(RobotController rc, double[] enCosts, double[] allyCosts, double rubbleMult) {
+    public Potential(RobotController rc, double[] enCosts, double[] allyCosts, boolean rubble_bool) {
         this.rc = rc;
         this.enCosts=enCosts;
         this.allyCosts=allyCosts;
-        this.rubbleMult=rubbleMult;
+        this.rubble_bool=rubble_bool;
         this.r=new Random(rc.getID());
     }
 
-    public MapLocation findMin(double[] init_costs) {
+    public MapLocation findMin(double[] init_costs) throws Exception {
         RobotInfo[] nearby_units = rc.senseNearbyRobots();
         double[] adj_costs = init_costs;
         MapLocation me = rc.getLocation();
@@ -46,10 +46,10 @@ public class Potential {
         while (dir < 8 &&!rc.canMove(Common.directions[dir])) dir++;
         if (dir == 8) return null;
         int mindex = 0;
-        double min_cost =adj_costs[dir] + rc.senseRubble(me.add(Common.directions[dir]))*rubbleMult;
+        double min_cost =adj_costs[dir] +  ((rubble_bool && Common.isObstacle(rc, dir))?Double.POSITIVE_INFINITY:0);
         int count = 1;
         for (int i = dir; i < 8; i++) {
-            double temp_cost = adj_costs[i] + rc.senseRubble(me.add(Common.directions[i]))*rubbleMult;
+            double temp_cost = adj_costs[i] + ((rubble_bool && Common.isObstacle(rc, i))?Double.POSITIVE_INFINITY:0);
 
             if (rc.canMove(Common.directions[i]) && temp_cost<min_cost) {
                 count=1;

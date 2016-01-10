@@ -1,12 +1,10 @@
 package team018.units.shared;
 
-import battlecode.common.Direction;
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
-import battlecode.common.RobotInfo;
-import battlecode.common.RobotType;
+import battlecode.common.*;
 import team018.frameworks.moods.Mood;
 import team018.frameworks.movement.MovementController;
+import team018.frameworks.movement.Potential;
+import team018.frameworks.util.Common;
 
 /**
  * Created by alexhuleatt on 1/4/16.
@@ -20,6 +18,7 @@ public class SoloAttack extends Mood
         sensorRangeSquared;
     MovementController mc;
     RobotInfo[] hostile;
+    Potential p;
     public SoloAttack(RobotController rc)
     {
         super(rc);
@@ -27,6 +26,22 @@ public class SoloAttack extends Mood
         attackRangeSquared = type.attackRadiusSquared;
         sensorRangeSquared = type.sensorRadiusSquared;
         mc = new MovementController(rc);
+
+        int numTypes = RobotType.values().length;
+        double[] en_costs = new double[numTypes];
+        double[] al_costs = new double[numTypes];
+        en_costs[RobotType.SOLDIER.ordinal()] = -1000;
+        en_costs[RobotType.ARCHON.ordinal()] = -1000;
+        en_costs[RobotType.GUARD.ordinal()] = -1000;
+        en_costs[RobotType.ZOMBIEDEN.ordinal()] = -1000;
+        en_costs[RobotType.STANDARDZOMBIE.ordinal()] = -1000;
+        en_costs[RobotType.FASTZOMBIE.ordinal()] = -1000;
+        en_costs[RobotType.BIGZOMBIE.ordinal()] = -1000;
+        en_costs[RobotType.VIPER.ordinal()] = -1000;
+        en_costs[RobotType.TURRET.ordinal()] = -1000;
+
+        p = new Potential(rc, en_costs,al_costs,true);
+
     }
 
     @Override
@@ -49,9 +64,7 @@ public class SoloAttack extends Mood
             for (int i = 0; i < hostile.length; i++)
             {
                 checkLocation = hostile[i].location;
-                x = me.x - checkLocation.x;
-                y = me.y - checkLocation.y;
-                checkDistance = x * x + y * y;
+                checkDistance = me.distanceSquaredTo(checkLocation);
                 if (checkDistance < distance)
                 {
                     closest = hostile[i];
@@ -74,21 +87,9 @@ public class SoloAttack extends Mood
                 }
                 else
                 {
-                    Direction direction = me.directionTo(closestLocation);
-                    if (rc.canMove(direction))
-                    {
-                        rc.move(direction);
-                    }
-                    else
-                    {
-                        mc.bug(me.add(direction));
-                        //  Don't clear rubble unnecessarily
-
-//                        MapLocation destination = me.add(direction);
-//                        if (GameConstants.RUBBLE_OBSTRUCTION_THRESH < rc.senseRubble(destination))
-//                        {
-//                            rc.clearRubble(direction);
-//                        }
+                    MapLocation best = p.findMin(new double[8]);
+                    if (best != null) {
+                        Common.basicMove(rc,best);
                     }
                 }
             }

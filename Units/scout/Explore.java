@@ -51,7 +51,7 @@ public class Explore extends Mood {
         en_costs[RobotType.TURRET.ordinal()] = 1000;
 
 
-        p = new Potential(rc, en_costs, al_costs, 0.0);
+        p = new Potential(rc, en_costs, al_costs, false);
         visited = new BitSet();
         this.c = new Comm(rc);
 
@@ -80,7 +80,7 @@ public class Explore extends Mood {
 
 
             for (RobotInfo ri : nearby) {
-                if ((!broadcast_cds.containsKey(ri.ID) || rc.getRoundNum()-broadcast_cds.get(ri.ID) > 100) && ri.type == RobotType.ZOMBIEDEN || (ri.type == RobotType.ARCHON && ri.team != team)) {
+                if ((!broadcast_cds.containsKey(ri.ID) || rc.getRoundNum()-broadcast_cds.get(ri.ID) > 100) && (ri.type == RobotType.ZOMBIEDEN || (ri.type == RobotType.ARCHON && ri.team != team))) {
 
                     si = new SignalInfo();
                     si.type = SignalType.FOUND_ROBOT;
@@ -97,7 +97,7 @@ public class Explore extends Mood {
             MapLocation t;
             for (int i = 0; i < 8; i++) {
                 t = me.add(Common.directions[i]);
-                adj_costs[i] += 100.0/t.distanceSquaredTo(avg);
+                adj_costs[i] += 1000.0/t.distanceSquaredTo(avg);
                 if (visited.get(t.hashCode())) {
                     adj_costs[i] += 100;
                 }

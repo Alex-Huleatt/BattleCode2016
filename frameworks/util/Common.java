@@ -6,6 +6,7 @@
 package team018.frameworks.util;
 
 import battlecode.common.Direction;
+import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 
@@ -47,14 +48,19 @@ public class Common {
     }
 
     public static MapLocation intToLoc(int l) {
-        return new MapLocation(l >> 8, l & 255);
+
+        byte y = (byte) (l & 255);
+        byte x = (byte) (l >> 8);
+        return new MapLocation(x,y);
     }
 
     public static int locToInt(MapLocation m) {
         if (m == null) {
             return -1;
         }
-        return m.x << 8 | m.y;
+        byte x = (byte)m.x;
+        byte y = (byte)m.y;
+        return x << 8 | y;
     }
 
     public static boolean isObstacle(RobotController rc, Direction dir) throws Exception {
@@ -63,7 +69,7 @@ public class Common {
 
     public static boolean isObstacle(RobotController rc, MapLocation loc) throws Exception {
         if (rc.canSenseLocation(loc)) {
-            return rc.senseRubble(loc) > 50 || rc.senseRobotAtLocation(loc)!= null;
+            return rc.senseRubble(loc) > GameConstants.RUBBLE_OBSTRUCTION_THRESH || rc.senseRobotAtLocation(loc)!= null;
         }
         return true;
     }

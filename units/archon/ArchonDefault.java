@@ -43,6 +43,7 @@ public class ArchonDefault extends Mood
             si.type= SignalType.ARCHON_LOC;
             c.sendSignal(si, 5000);
             loc_broadcast_cd = 15;
+            //System.out.println("broadcasted");
             return false;
         } else {
             loc_broadcast_cd--;
