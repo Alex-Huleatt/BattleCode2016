@@ -63,7 +63,7 @@ public class Common {
 
     public static boolean isObstacle(RobotController rc, MapLocation loc) throws Exception {
         if (rc.canSenseLocation(loc)) {
-            return rc.senseRubble(loc) > 50;
+            return rc.senseRubble(loc) > 50 || rc.senseRobotAtLocation(loc)!= null;
         }
         return true;
     }

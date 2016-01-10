@@ -35,8 +35,8 @@ public class ArchonDefault extends Mood
         if (loc_broadcast_cd == 0) {
             SignalInfo si = new SignalInfo();
             si.type= SignalType.ARCHON_LOC;
-            c.sendSignal(si, 2000);
-            loc_broadcast_cd = 100;
+            c.sendSignal(si, 5000);
+            loc_broadcast_cd = 15;
             return false;
         } else {
             loc_broadcast_cd--;
@@ -60,7 +60,6 @@ public class ArchonDefault extends Mood
                 }
             }
         }
-        //System.out.println("Didn't have requirements.");
         return false;
     }
 
@@ -88,8 +87,8 @@ public class ArchonDefault extends Mood
 
     //	The highest-to-lowest preferences of robots to build
     static final RobotType[] robotTypes = {
-            RobotType.SCOUT,
             RobotType.SOLDIER,
+            RobotType.SCOUT,
             RobotType.GUARD,
             RobotType.VIPER,
             RobotType.TURRET,

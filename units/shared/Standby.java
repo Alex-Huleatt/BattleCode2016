@@ -27,6 +27,8 @@ public class Standby extends Mood
     Potential p;
     HashMap<Integer, MapLocation> archon_positions;
     Comm c;
+    int avgX,avgY, moves;
+    int last_dir;
     public Standby(RobotController rc)
     {
         super(rc);
@@ -37,6 +39,10 @@ public class Standby extends Mood
         double[] al_costs = new double[RobotType.values().length];
         p = new Potential(rc, en_costs, al_costs, 1.0);
         c = new Comm(rc);
+        me = rc.getLocation();
+        avgX = me.x;
+        avgY = me.y;
+        moves = 1;
         archon_positions=new HashMap<>();
     }
 
@@ -50,6 +56,7 @@ public class Standby extends Mood
     @Override
     public void act() throws Exception
     {
+        rc.setIndicatorString(0,"Standby");
         if (rc.isCoreReady()) {
             SignalInfo si;
             while ((si = c.receiveSignal()) != null) {
@@ -58,9 +65,12 @@ public class Standby extends Mood
                     archon_positions.put(si.robotID, si.senderLoc);
                 }
             }
-
-            Common.basicMove(rc,p.findMin(init_costs()));
-
+            double[] init_costs = init_costs();
+            MapLocation best = p.findMin(init_costs);
+            if (best != null) {
+                last_dir = Common.dirToInt(me.directionTo(best));
+                Common.basicMove(rc, best);
+            }
         }
     }
 
@@ -82,9 +92,19 @@ public class Standby extends Mood
             if (Common.isObstacle(rc,t)) {
                 costs[i] = Double.POSITIVE_INFINITY;
             } else {
+
                 if (nearest != null) {
-                    double x = 1.0 / (t.distanceSquaredTo(nearest)-30);
-                    costs[i] += 10000 * x;
+                    double x = 100 * ((t.distanceSquaredTo(nearest)-35)/100);
+                    costs[i] += 1000.0 * x * x;
+                    int vx1 = me.x-nearest.x;
+                    int vy1 = me.y-nearest.y;
+
+                    int vx2 = t.x-nearest.x;
+                    int vy2 = t.y-nearest.y;
+
+                    if (vy1*vx2 > vx1*vy2) costs[i]+= 1000;
+
+
                 }
             }
         }
