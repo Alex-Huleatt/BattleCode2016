@@ -13,7 +13,7 @@ import team018.frameworks.moods.Mood;
  */
 public class ArchonInitial extends ArchonDefault
 {
-    RobotType[] spawnOrder = {
+    static RobotType[] spawnOrder = {
             RobotType.SCOUT,
             RobotType.VIPER,
             RobotType.GUARD,

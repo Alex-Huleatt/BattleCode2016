@@ -18,9 +18,6 @@ import java.util.Random;
  */
 public class ArchonDefault extends Mood
 {
-    static final Direction[] directions = Direction.values();
-
-
     Random rand;
     Team us;
     Comm c;
@@ -28,11 +25,49 @@ public class ArchonDefault extends Mood
 
     int sensorRadiusSquared;
     int loc_broadcast_cd;
+    int turnsSinceSpawn = 0;
     boolean ready;
     Potential p;
     public HashMap<Integer, MapLocation> archon_positions;
     public HashMap<Integer, MapLocation> den_positions;
     RobotInfo[] hostile;
+
+    static final Direction[] directions = Direction.values();
+
+    //  The likelihood of spawning any unit during default behavior
+    public enum SpawnRatio
+    {
+        SOLDIER (RobotType.SOLDIER, 30),    //  somewhat likely (30%)
+        GUARD   (RobotType.GUARD,   30),    //  somewhat likely (30%)
+        VIPER   (RobotType.VIPER,   30),    //  somewhat likely (30%)
+        TURRET  (RobotType.TURRET,  10),    //  not very likely (10%)
+        SCOUT   (RobotType.SCOUT,   0);     //  just allow initially spawned Scouts
+
+        RobotType type;
+        int odds;
+        SpawnRatio(RobotType type, int odds)
+        {
+            this.type = type;
+            this.odds = odds;
+        }
+    }
+    static final SpawnRatio[] ratios = SpawnRatio.values();
+
+    private static RobotType decideSpawn(int key)
+    {
+        for (int i = 0; i < ratios.length; i++)
+        {
+            if (key < ratios[i].odds)
+            {
+                return ratios[i].type;
+            }
+            else
+            {
+                key -= ratios[i].odds;
+            }
+        }
+        return null;
+    }
 
     //  returns false if broadcasted, true otherwise
     //  Other way may be intuitive, but this saves one negation later
@@ -63,11 +98,12 @@ public class ArchonDefault extends Mood
                 if (rc.canBuild(d, type))
                 {
                     rc.build(d, type);
-                    return true;
+                    turnsSinceSpawn = 0;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     protected void healAdjacent() throws Exception
@@ -91,15 +127,6 @@ public class ArchonDefault extends Mood
             }
         }
     }
-
-    //	The highest-to-lowest preferences of robots to build
-    static final RobotType[] robotTypes = {
-            RobotType.SOLDIER,
-            RobotType.SCOUT,
-            RobotType.GUARD,
-            RobotType.VIPER,
-            RobotType.TURRET,
-    };
 
     public ArchonDefault(RobotController rc)
     {
@@ -128,6 +155,8 @@ public class ArchonDefault extends Mood
     {
         if (ready) {
             SignalInfo si;
+
+            //  looping with hashmap operations, eh?
             while ((si=c.receiveSignal())!=null) {
 
                 if (si.type==SignalType.ARCHON_LOC) {
@@ -137,24 +166,19 @@ public class ArchonDefault extends Mood
                     den_positions.put(si.robotID, si.targetLoc);
                 }
             }
-        }
+            //  if did NOT broadcast
+            if (broadcastLocation())
+            {
+                //Building logic
+                lastSpawned = toSpawn;
 
-        if (ready && broadcastLocation())
-        {
-
-            //Building logic
-            lastSpawned = toSpawn;
-
-            //	Determine what to spawn next
-            int index = (rand.nextInt() % 5 + 5) % 5;
-            toSpawn = robotTypes[index];
-
-            //  try to build
-            if (!buildRobot(toSpawn)) {
-
+                //	Determine what to spawn next
+                toSpawn = decideSpawn((rand.nextInt() % 100 + 100) % 100);
+                if (buildRobot(toSpawn))
+                {
+                    healAdjacent();
+                }
             }
-
-            healAdjacent();
         }
     }
 
