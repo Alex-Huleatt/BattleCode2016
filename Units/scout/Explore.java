@@ -27,6 +27,7 @@ public class Explore extends Mood {
     BitSet visited;
     Comm c;
     HashMap<Integer, MapLocation> archon_positions;
+    HashMap<Integer, Integer> broadcast_cds;
 
     RobotInfo[] nearby;
     public Explore(RobotController rc) {
@@ -44,7 +45,7 @@ public class Explore extends Mood {
         en_costs[RobotType.GUARD.ordinal()] = 1000;
         en_costs[RobotType.ZOMBIEDEN.ordinal()] = 1000;
         en_costs[RobotType.STANDARDZOMBIE.ordinal()] = 1000;
-        en_costs[RobotType.FASTZOMBIE.ordinal()] = Double.POSITIVE_INFINITY;
+        en_costs[RobotType.FASTZOMBIE.ordinal()] = 3000;
         en_costs[RobotType.BIGZOMBIE.ordinal()] = 1000;
         en_costs[RobotType.VIPER.ordinal()] = 1000;
         en_costs[RobotType.TURRET.ordinal()] = 1000;
@@ -55,6 +56,7 @@ public class Explore extends Mood {
         this.c = new Comm(rc);
 
         archon_positions= new HashMap<>();
+        broadcast_cds=new HashMap<>();
     }
 
     @Override
@@ -78,14 +80,14 @@ public class Explore extends Mood {
 
 
             for (RobotInfo ri : nearby) {
-                if (ri.type == RobotType.ZOMBIEDEN || (ri.type == RobotType.ARCHON && ri.team != team)) {
+                if ((!broadcast_cds.containsKey(ri.ID) || rc.getRoundNum()-broadcast_cds.get(ri.ID) > 100) && ri.type == RobotType.ZOMBIEDEN || (ri.type == RobotType.ARCHON && ri.team != team)) {
 
                     si = new SignalInfo();
                     si.type = SignalType.FOUND_ROBOT;
                     si.targetLoc = ri.location;
                     si.data = ri.type.ordinal();
-
-                    c.sendSignal(si, 10);
+                    broadcast_cds.put(ri.ID, rc.getRoundNum());
+                    c.sendSignal(si, 2000);
                 }
             }
 

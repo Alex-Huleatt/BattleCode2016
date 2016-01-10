@@ -104,7 +104,7 @@ public class Standby extends Mood
                     int vx2 = t.x-nearest.x;
                     int vy2 = t.y-nearest.y;
 
-                    if (vy1*vx2 > vx1*vy2) costs[i]+= 1000;
+                    if (vy1*vx2 > vx1*vy2) costs[i]+= 1000; //Cross product thing. checks clockwise or counter.
             }
         }
         return costs;

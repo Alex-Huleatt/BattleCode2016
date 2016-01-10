@@ -5,7 +5,9 @@ import team018.frameworks.comm.Comm;
 import team018.frameworks.comm.SignalInfo;
 import team018.frameworks.comm.SignalType;
 import team018.frameworks.moods.Mood;
+import team018.frameworks.movement.Potential;
 
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -27,6 +29,10 @@ public class ArchonDefault extends Mood
     int sensorRadiusSquared;
     int loc_broadcast_cd;
     boolean ready;
+    Potential p;
+    public HashMap<Integer, MapLocation> archon_positions;
+    public HashMap<Integer, MapLocation> den_positions;
+    RobotInfo[] hostile;
 
     //  returns false if broadcasted, true otherwise
     //  Other way may be intuitive, but this saves one negation later
@@ -102,6 +108,9 @@ public class ArchonDefault extends Mood
         sensorRadiusSquared = RobotType.ARCHON.sensorRadiusSquared;
         loc_broadcast_cd=0;
         c = new Comm(rc);
+        this.archon_positions=new HashMap<>();
+        den_positions = new HashMap<>();
+
     }
 
     @Override
@@ -110,13 +119,28 @@ public class ArchonDefault extends Mood
         super.update();
 
         ready = rc.isCoreReady();
+        hostile = rc.senseHostileRobots(me, rc.getType().sensorRadiusSquared);
     }
 
     @Override
     public void act() throws Exception
     {
+        if (ready) {
+            SignalInfo si;
+            while ((si=c.receiveSignal())!=null) {
+
+                if (si.type==SignalType.ARCHON_LOC) {
+                    archon_positions.put(si.robotID, si.senderLoc);
+                }
+                if (si.type==SignalType.FOUND_ROBOT && RobotType.values()[si.data]==RobotType.ZOMBIEDEN) {
+                    den_positions.put(si.robotID, si.targetLoc);
+                }
+            }
+        }
+
         if (ready && broadcastLocation())
         {
+
             //Building logic
             lastSpawned = toSpawn;
 
@@ -125,7 +149,9 @@ public class ArchonDefault extends Mood
             toSpawn = robotTypes[index];
 
             //  try to build
-            buildRobot(toSpawn);
+            if (!buildRobot(toSpawn)) {
+
+            }
 
             healAdjacent();
         }
