@@ -37,7 +37,7 @@ public class Standby extends Mood
 
         double[] en_costs = new double[RobotType.values().length];
         double[] al_costs = new double[RobotType.values().length];
-        p = new Potential(rc, en_costs, al_costs, 1.0);
+        p = new Potential(rc, en_costs, al_costs, 0);
         c = new Comm(rc);
         me = rc.getLocation();
         avgX = me.x;
@@ -67,9 +67,14 @@ public class Standby extends Mood
             }
             double[] init_costs = init_costs();
             MapLocation best = p.findMin(init_costs);
+
             if (best != null) {
-                last_dir = Common.dirToInt(me.directionTo(best));
-                Common.basicMove(rc, best);
+                if (rc.senseRubble(best)!= 0) {
+                    rc.clearRubble(me.directionTo(best));
+                } else {
+                    last_dir = Common.dirToInt(me.directionTo(best));
+                    Common.basicMove(rc, best);
+                }
             }
         }
     }
@@ -89,9 +94,6 @@ public class Standby extends Mood
         }
         for (int i = 0; i < 8; i++) {
             MapLocation t = me.add(Common.directions[i]);
-            if (Common.isObstacle(rc,t)) {
-                costs[i] = Double.POSITIVE_INFINITY;
-            } else {
 
                 if (nearest != null) {
                     double x = 100 * ((t.distanceSquaredTo(nearest)-35)/100);
@@ -103,9 +105,6 @@ public class Standby extends Mood
                     int vy2 = t.y-nearest.y;
 
                     if (vy1*vx2 > vx1*vy2) costs[i]+= 1000;
-
-
-                }
             }
         }
         return costs;
