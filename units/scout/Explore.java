@@ -8,7 +8,8 @@ import team018.frameworks.comm.Comm;
 import team018.frameworks.comm.SignalInfo;
 import team018.frameworks.comm.SignalType;
 import team018.frameworks.moods.Mood;
-import team018.frameworks.movement.Potential;
+import team018.frameworks.movement.FieldController;
+import team018.frameworks.movement.Force;
 import team018.frameworks.util.Common;
 
 import java.util.BitSet;
@@ -23,35 +24,50 @@ public class Explore extends Mood {
     int avgX;
     int avgY;
     int moves;
-    Potential p;
+
+
+    FieldController fc;
     BitSet visited;
     Comm c;
     HashMap<Integer, MapLocation> archon_positions;
     HashMap<Integer, Integer> broadcast_cds;
 
     RobotInfo[] nearby;
+
+
+
     public Explore(RobotController rc) {
         super(rc);
         me = rc.getLocation();
         avgX=me.x;
         avgY=me.y;
         moves = 1;
-        int numTypes = RobotType.values().length;
-        double[] en_costs = new double[numTypes];
-        double[] al_costs = new double[numTypes];
+//        int numTypes = RobotType.values().length;
+//        double[] en_costs = new double[numTypes];
+//        double[] al_costs = new double[numTypes];
+//
+//        en_costs[RobotType.SOLDIER.ordinal()] = 1000;
+//        en_costs[RobotType.ARCHON.ordinal()] = 1000;
+//        en_costs[RobotType.GUARD.ordinal()] = 1000;
+//        en_costs[RobotType.ZOMBIEDEN.ordinal()] = 1000;
+//        en_costs[RobotType.STANDARDZOMBIE.ordinal()] = 1000;
+//        en_costs[RobotType.FASTZOMBIE.ordinal()] = 3000;
+//        en_costs[RobotType.BIGZOMBIE.ordinal()] = 1000;
+//        en_costs[RobotType.VIPER.ordinal()] = 1000;
+//        en_costs[RobotType.TURRET.ordinal()] = 1000;
 
-        en_costs[RobotType.SOLDIER.ordinal()] = 1000;
-        en_costs[RobotType.ARCHON.ordinal()] = 1000;
-        en_costs[RobotType.GUARD.ordinal()] = 1000;
-        en_costs[RobotType.ZOMBIEDEN.ordinal()] = 1000;
-        en_costs[RobotType.STANDARDZOMBIE.ordinal()] = 1000;
-        en_costs[RobotType.FASTZOMBIE.ordinal()] = 3000;
-        en_costs[RobotType.BIGZOMBIE.ordinal()] = 1000;
-        en_costs[RobotType.VIPER.ordinal()] = 1000;
-        en_costs[RobotType.TURRET.ordinal()] = 1000;
 
+        //p = new Potential(rc, en_costs, al_costs, false);
+        fc = new FieldController(rc);
+        fc.can_fly=true;
+        Force stdForce = new Force(rc) {
+            @Override
+            public double enemy(MapLocation source, MapLocation t) {
+                return 1000.0 / source.distanceSquaredTo(t);
+            }
+        };
+        fc.addForce(stdForce, RobotType.values());
 
-        p = new Potential(rc, en_costs, al_costs, false);
         visited = new BitSet();
         this.c = new Comm(rc);
 
@@ -108,10 +124,11 @@ public class Explore extends Mood {
 
 
 
-            MapLocation best = p.findMin(adj_costs);
-            if (best != null) {
-                avgX += best.x;
-                avgY += best.y;
+            int best_dir = fc.findDir(nearby, adj_costs);
+            if (best_dir != -1) {
+                MapLocation toGo = me.add(Common.directions[best_dir]);
+                avgX += toGo.x;
+                avgY += toGo.y;
                 moves++;
                 if (moves > 30) {
                     avgX = me.x;
@@ -119,7 +136,7 @@ public class Explore extends Mood {
                     moves = 1;
 
                 }
-                Common.basicMove(rc, best);
+                Common.basicMove(rc, toGo);
             }
         }
 

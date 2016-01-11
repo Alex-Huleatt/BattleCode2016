@@ -17,12 +17,19 @@ public class Potential {
     private double[] enCosts;
     private double[] allyCosts;
     private Random r;
+
     public Potential(RobotController rc, double[] enCosts, double[] allyCosts, boolean rubble_bool) {
         this.rc = rc;
         this.enCosts=enCosts;
         this.allyCosts=allyCosts;
         this.rubble_bool=rubble_bool;
         this.r=new Random(rc.getID());
+    }
+
+    public double getForce(int x, int y) {
+
+
+        return 0.0;
     }
 
     public MapLocation findMin(double[] init_costs) throws Exception {
@@ -49,22 +56,26 @@ public class Potential {
         double min_cost =adj_costs[dir] +  ((rubble_bool && Common.isObstacle(rc, dir))?Double.POSITIVE_INFINITY:0);
         int count = 1;
         for (int i = dir; i < 8; i++) {
-            double temp_cost = adj_costs[i] + ((rubble_bool && Common.isObstacle(rc, i))?Double.POSITIVE_INFINITY:0);
+            if (!(rubble_bool && Common.isObstacle(rc, i))) {
+                double temp_cost = adj_costs[i];
 
-            if (rc.canMove(Common.directions[i]) && temp_cost<min_cost) {
-                count=1;
-                mindex=i;
-                min_cost = temp_cost;
-            }
-            else if(Math.abs(temp_cost-min_cost)<1) {
-                count++;
-                if (r.nextDouble()<1.0/count) {
-                    mindex=i;
-                    min_cost=temp_cost;
+                if (rc.canMove(Common.directions[i]) && temp_cost < min_cost) {
+                    count = 1;
+                    mindex = i;
+                    min_cost = temp_cost;
+                } else if (Math.abs(temp_cost - min_cost) < 1) {
+                    count++;
+                    if (r.nextDouble() < 1.0 / count) {
+                        mindex = i;
+                        min_cost = temp_cost;
+                    }
                 }
+            } else {
+                adj_costs[i] = Double.POSITIVE_INFINITY;
             }
 
         }
+
         return me.add(Common.directions[mindex]);
     }
 

@@ -69,7 +69,9 @@ public class Common {
 
     public static boolean isObstacle(RobotController rc, MapLocation loc) throws Exception {
         if (rc.canSenseLocation(loc)) {
-            return rc.senseRubble(loc) > GameConstants.RUBBLE_OBSTRUCTION_THRESH || rc.senseRobotAtLocation(loc)!= null;
+            return rc.senseRubble(loc) > GameConstants.RUBBLE_OBSTRUCTION_THRESH
+                    || rc.senseRobotAtLocation(loc)!= null
+                    || !rc.onTheMap(loc);
         }
         return true;
     }

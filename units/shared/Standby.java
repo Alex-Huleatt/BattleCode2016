@@ -97,7 +97,7 @@ public class Standby extends Mood
             MapLocation t = me.add(Common.directions[i]);
 
                 if (nearest != null) {
-                    double x =  25*((t.distanceSquaredTo(nearest)-35)/25);
+                    double x =  25*((t.distanceSquaredTo(nearest)-35)/25);// round to nearest 25 to smooth the costs
                     costs[i] += 1000.0 * x * x;
                     int vx1 = me.x-nearest.x;
                     int vy1 = me.y-nearest.y;
@@ -105,7 +105,7 @@ public class Standby extends Mood
                     int vx2 = t.x-nearest.x;
                     int vy2 = t.y-nearest.y;
 
-                    if (vy1*vx2 > vx1*vy2) costs[i]+= 1000; //Cross product thing. checks clockwise or counter.
+                    if (vy1*vx2 > vx1*vy2) costs[i]+= 3000; //Cross product thing. checks clockwise or counter.
             }
         }
         return costs;
