@@ -78,10 +78,4 @@ public class FieldController {
         if (costs[mindex]==Double.POSITIVE_INFINITY) return -1;
         return mindex;
     }
-
-
-
-
-
-
 }

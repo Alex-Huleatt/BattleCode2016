@@ -3,13 +3,12 @@ package team018.units.shared;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
-import battlecode.common.RobotType;
 import team018.frameworks.comm.Comm;
 import team018.frameworks.comm.SignalInfo;
 import team018.frameworks.comm.SignalType;
 import team018.frameworks.moods.Mood;
+import team018.frameworks.movement.FieldController;
 import team018.frameworks.movement.MovementController;
-import team018.frameworks.movement.Potential;
 import team018.frameworks.util.Common;
 
 import java.util.HashMap;
@@ -24,7 +23,7 @@ public class Standby extends Mood
     int sensorRangeSquared;
     MovementController mc;
     RobotInfo[] hostile;
-    Potential p;
+    FieldController fc;
     HashMap<Integer, MapLocation> archon_positions;
     Comm c;
     int avgX,avgY, moves;
@@ -34,10 +33,7 @@ public class Standby extends Mood
         super(rc);
         sensorRangeSquared = rc.getType().sensorRadiusSquared;
         mc = new MovementController(rc);
-
-        double[] en_costs = new double[RobotType.values().length];
-        double[] al_costs = new double[RobotType.values().length];
-        p = new Potential(rc, en_costs, al_costs,true);
+        fc = new FieldController(rc);
         c = new Comm(rc);
         me = rc.getLocation();
         avgX = me.x;
@@ -66,15 +62,10 @@ public class Standby extends Mood
                 }
             }
             double[] init_costs = init_costs();
-            MapLocation best = p.findMin(init_costs);
-
-            if (best != null) {
-                if (rc.senseRubble(best)!= 0) {
-                    rc.clearRubble(me.directionTo(best));
-                } else {
-                    last_dir = Common.dirToInt(me.directionTo(best));
-                    Common.basicMove(rc, best);
-                }
+            int best_dir = fc.findDir(rc.senseNearbyRobots(),init_costs);
+            if (best_dir!=-1) {
+                last_dir = best_dir;
+                Common.basicMove(rc,me.add(Common.directions[best_dir]));
             }
         }
     }

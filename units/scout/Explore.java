@@ -42,20 +42,6 @@ public class Explore extends Mood {
         avgX=me.x;
         avgY=me.y;
         moves = 1;
-//        int numTypes = RobotType.values().length;
-//        double[] en_costs = new double[numTypes];
-//        double[] al_costs = new double[numTypes];
-//
-//        en_costs[RobotType.SOLDIER.ordinal()] = 1000;
-//        en_costs[RobotType.ARCHON.ordinal()] = 1000;
-//        en_costs[RobotType.GUARD.ordinal()] = 1000;
-//        en_costs[RobotType.ZOMBIEDEN.ordinal()] = 1000;
-//        en_costs[RobotType.STANDARDZOMBIE.ordinal()] = 1000;
-//        en_costs[RobotType.FASTZOMBIE.ordinal()] = 3000;
-//        en_costs[RobotType.BIGZOMBIE.ordinal()] = 1000;
-//        en_costs[RobotType.VIPER.ordinal()] = 1000;
-//        en_costs[RobotType.TURRET.ordinal()] = 1000;
-
 
         //p = new Potential(rc, en_costs, al_costs, false);
         fc = new FieldController(rc);
@@ -118,7 +104,7 @@ public class Explore extends Mood {
                     adj_costs[i] += 100;
                 }
                 for (MapLocation m : archon_positions.values()) {
-                    adj_costs[i] += 300.0/t.distanceSquaredTo(m);
+                    adj_costs[i] += 700.0/t.distanceSquaredTo(m);
                 }
             }
 

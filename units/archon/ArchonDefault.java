@@ -5,7 +5,6 @@ import team018.frameworks.comm.Comm;
 import team018.frameworks.comm.SignalInfo;
 import team018.frameworks.comm.SignalType;
 import team018.frameworks.moods.Mood;
-import team018.frameworks.movement.Potential;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -27,7 +26,6 @@ public class ArchonDefault extends Mood
     int loc_broadcast_cd;
     int turnsSinceSpawn = 0;
     boolean ready;
-    Potential p;
     public HashMap<Integer, MapLocation> archon_positions;
     public HashMap<Integer, MapLocation> den_positions;
     RobotInfo[] hostile;

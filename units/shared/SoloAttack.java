@@ -1,9 +1,13 @@
 package team018.units.shared;
 
-import battlecode.common.*;
+import battlecode.common.MapLocation;
+import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 import team018.frameworks.moods.Mood;
+import team018.frameworks.movement.FieldController;
+import team018.frameworks.movement.Force;
 import team018.frameworks.movement.MovementController;
-import team018.frameworks.movement.Potential;
 import team018.frameworks.util.Common;
 
 /**
@@ -18,7 +22,7 @@ public class SoloAttack extends Mood
         sensorRangeSquared;
     MovementController mc;
     RobotInfo[] hostile;
-    Potential p;
+    FieldController fc;
     public SoloAttack(RobotController rc)
     {
         super(rc);
@@ -27,20 +31,15 @@ public class SoloAttack extends Mood
         sensorRangeSquared = type.sensorRadiusSquared;
         mc = new MovementController(rc);
 
-        int numTypes = RobotType.values().length;
-        double[] en_costs = new double[numTypes];
-        double[] al_costs = new double[numTypes];
-        en_costs[RobotType.SOLDIER.ordinal()] = -1000;
-        en_costs[RobotType.ARCHON.ordinal()] = -1000;
-        en_costs[RobotType.GUARD.ordinal()] = -1000;
-        en_costs[RobotType.ZOMBIEDEN.ordinal()] = -1000;
-        en_costs[RobotType.STANDARDZOMBIE.ordinal()] = -1000;
-        en_costs[RobotType.FASTZOMBIE.ordinal()] = -1000;
-        en_costs[RobotType.BIGZOMBIE.ordinal()] = -1000;
-        en_costs[RobotType.VIPER.ordinal()] = -1000;
-        en_costs[RobotType.TURRET.ordinal()] = -1000;
 
-        p = new Potential(rc, en_costs,al_costs,true);
+        fc = new FieldController(rc);
+        Force stdForce = new Force(rc) {
+            @Override
+            public double enemy(MapLocation source, MapLocation t) {
+                return -1000.0 / source.distanceSquaredTo(t);
+            }
+        };
+        fc.addForce(stdForce, RobotType.values());
 
     }
 
@@ -87,9 +86,9 @@ public class SoloAttack extends Mood
                 }
                 else
                 {
-                    MapLocation best = p.findMin(new double[8]);
-                    if (best != null) {
-                        Common.basicMove(rc,best);
+                    int best_dir = fc.findDir(rc.senseNearbyRobots(), new double[8]);
+                    if (best_dir != -1) {
+                        Common.basicMove(rc, me.add(Common.directions[best_dir]));
                     }
                 }
             }
