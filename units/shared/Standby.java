@@ -1,6 +1,5 @@
 package team018.units.shared;
 
-import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
@@ -56,6 +55,7 @@ public class Standby extends Mood
     public void act() throws Exception
     {
         rc.setIndicatorString(0,"Standby");
+        rc.setIndicatorString(1,"");
         if (rc.isCoreReady()) {
             SignalInfo si;
             while ((si = c.receiveSignal()) != null) {
@@ -71,10 +71,16 @@ public class Standby extends Mood
             }
             double[] init_costs = init_costs();
             int best_dir = fc.findDir(rc.senseNearbyRobots(),init_costs);
+            rc.setIndicatorString(1, best_dir+"");
             if (best_dir != -1 && !Common.isObstacle(rc, best_dir)){
                 MapLocation dest = me.add(Common.directions[best_dir]);
+                rc.setIndicatorString(1, "wanna move to " + dest);
                 Common.basicMove(rc, dest);
+            } else {
+                rc.setIndicatorString(1, "dun wanna move");
             }
+        } else {
+            rc.setIndicatorString(1,"core not ready.");
         }
     }
 
