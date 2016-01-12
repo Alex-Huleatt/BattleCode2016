@@ -20,7 +20,10 @@ public class Unit {
 
 
     public final void run() throws Exception {
+
         while (true) {
+            rc.setIndicatorString(0,"");
+            rc.setIndicatorString(1,"");
             mc.run();
             //should not have real behavior outside moodcontroller, can put debug info here.
             Clock.yield();
