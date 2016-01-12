@@ -99,6 +99,15 @@ public class Explore extends Mood {
             MapLocation t;
             for (int i = 0; i < 8; i++) {
                 t = me.add(Common.directions[i]);
+                double parts = rc.senseParts(t);
+                if (parts > 0) {
+                    si = new SignalInfo();
+                    si.targetLoc=t;
+                    si.type=SignalType.FOUND_PARTS;
+                    si.data=(int)(parts*1000);
+                    c.sendSignal(si, 2000);
+                }
+
                 adj_costs[i] += 1000.0/t.distanceSquaredTo(avg);
                 if (visited.get(t.hashCode())) {
                     adj_costs[i] += 100;
