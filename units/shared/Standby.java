@@ -1,5 +1,6 @@
 package team018.units.shared;
 
+import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
@@ -28,6 +29,8 @@ public class Standby extends Mood
     Comm c;
     int avgX,avgY, moves;
     int last_dir;
+    MapLocation halpLocation = null;
+
     public Standby(RobotController rc)
     {
         super(rc);
@@ -60,12 +63,17 @@ public class Standby extends Mood
                 if (si.type == SignalType.ARCHON_LOC) {
                     archon_positions.put(si.robotID, si.senderLoc);
                 }
+
+                if (si.type == SignalType.HALP)
+                {
+                    halpLocation = si.senderLoc;
+                }
             }
             double[] init_costs = init_costs();
             int best_dir = fc.findDir(rc.senseNearbyRobots(),init_costs);
-            if (best_dir!=-1) {
-                last_dir = best_dir;
-                Common.basicMove(rc,me.add(Common.directions[best_dir]));
+            if (best_dir != -1 && !Common.isObstacle(rc, best_dir)){
+                MapLocation dest = me.add(Common.directions[best_dir]);
+                Common.basicMove(rc, dest);
             }
         }
     }
@@ -105,7 +113,10 @@ public class Standby extends Mood
     @Override
     public Mood swing()
     {
-        //  Can save the result to prevent redundant calculations
+        if (halpLocation != null)
+        {
+            return new Halper(rc, halpLocation);
+        }
         if (0 < hostile.length)
         {
             return new SoloAttack(rc);

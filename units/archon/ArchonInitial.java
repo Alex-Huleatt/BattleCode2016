@@ -14,9 +14,7 @@ import team018.frameworks.moods.Mood;
 public class ArchonInitial extends ArchonDefault
 {
     static RobotType[] spawnOrder = {
-            RobotType.SCOUT,
-            RobotType.VIPER,
-            RobotType.GUARD,
+            RobotType.SCOUT
     };
 
     int spawnPointer = 0;
@@ -33,7 +31,7 @@ public class ArchonInitial extends ArchonDefault
         {
             broadcastLocation();
 
-            if (!buildRobot(spawnOrder[spawnPointer]))
+            if (buildRobot(spawnOrder[spawnPointer]))
             {
                 //  should never cause an error as long as act is after swing check
                 spawnPointer++;

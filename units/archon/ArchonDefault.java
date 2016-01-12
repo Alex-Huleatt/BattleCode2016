@@ -20,7 +20,7 @@ public class ArchonDefault extends Mood
     Random rand;
     Team us;
     Comm c;
-    RobotType lastSpawned, toSpawn;
+    RobotType toSpawn;
 
     int sensorRadiusSquared;
     int loc_broadcast_cd;
@@ -28,6 +28,7 @@ public class ArchonDefault extends Mood
     boolean ready;
     public HashMap<Integer, MapLocation> archon_positions;
     public HashMap<Integer, MapLocation> den_positions;
+    public HashMap<Integer, MapLocation> parts_positions;
     RobotInfo[] hostile;
 
     static final Direction[] directions = Direction.values();
@@ -35,11 +36,11 @@ public class ArchonDefault extends Mood
     //  The likelihood of spawning any unit during default behavior
     public enum SpawnRatio
     {
-        SOLDIER (RobotType.SOLDIER, 30),    //  somewhat likely (30%)
-        GUARD   (RobotType.GUARD,   30),    //  somewhat likely (30%)
-        VIPER   (RobotType.VIPER,   30),    //  somewhat likely (30%)
-        TURRET  (RobotType.TURRET,  10),    //  not very likely (10%)
-        SCOUT   (RobotType.SCOUT,   0);     //  just allow initially spawned Scouts
+        SOLDIER (RobotType.SOLDIER, 45),
+        GUARD   (RobotType.GUARD,   45),
+        VIPER   (RobotType.VIPER,    0),
+        TURRET  (RobotType.TURRET,  10),
+        SCOUT   (RobotType.SCOUT,   0);
 
         RobotType type;
         int odds;
@@ -65,6 +66,26 @@ public class ArchonDefault extends Mood
             }
         }
         return null;
+    }
+
+    protected void receiveSignals()
+    {
+        SignalInfo si;
+
+        //  looping with hashmap operations, eh?
+        while ((si=c.receiveSignal())!=null) {
+
+            if (si.type==SignalType.ARCHON_LOC) {
+                archon_positions.put(si.robotID, si.senderLoc);
+            }
+            if (si.type==SignalType.FOUND_ROBOT && RobotType.values()[si.data]==RobotType.ZOMBIEDEN) {
+                den_positions.put(si.robotID, si.targetLoc);
+            }
+            if (si.type==SignalType.FOUND_PARTS)
+            {
+                parts_positions.put(si.robotID, si.targetLoc);
+            }
+        }
     }
 
     //  returns false if broadcasted, true otherwise
@@ -134,9 +155,9 @@ public class ArchonDefault extends Mood
         sensorRadiusSquared = RobotType.ARCHON.sensorRadiusSquared;
         loc_broadcast_cd=0;
         c = new Comm(rc);
-        this.archon_positions=new HashMap<>();
+        archon_positions=new HashMap<>();
         den_positions = new HashMap<>();
-
+        parts_positions = new HashMap<>();
     }
 
     @Override
@@ -152,27 +173,22 @@ public class ArchonDefault extends Mood
     public void act() throws Exception
     {
         if (ready) {
-            SignalInfo si;
 
-            //  looping with hashmap operations, eh?
-            while ((si=c.receiveSignal())!=null) {
+            receiveSignals();
 
-                if (si.type==SignalType.ARCHON_LOC) {
-                    archon_positions.put(si.robotID, si.senderLoc);
-                }
-                if (si.type==SignalType.FOUND_ROBOT && RobotType.values()[si.data]==RobotType.ZOMBIEDEN) {
-                    den_positions.put(si.robotID, si.targetLoc);
-                }
-            }
             //  if did NOT broadcast
             if (broadcastLocation())
             {
-                //Building logic
-                lastSpawned = toSpawn;
-
                 //	Determine what to spawn next
-                toSpawn = decideSpawn((rand.nextInt() % 100 + 100) % 100);
+                if (toSpawn == null)
+                {
+                    toSpawn = decideSpawn((rand.nextInt() % 100 + 100) % 100);
+                }
                 if (buildRobot(toSpawn))
+                {
+                    toSpawn = null;
+                }
+                else
                 {
                     healAdjacent();
                 }
