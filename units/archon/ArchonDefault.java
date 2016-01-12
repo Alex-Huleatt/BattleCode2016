@@ -7,6 +7,7 @@ import team018.frameworks.comm.SignalType;
 import team018.frameworks.moods.Mood;
 import team018.frameworks.movement.FieldController;
 import team018.frameworks.util.Common;
+import team018.frameworks.util.Pair;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -30,7 +31,7 @@ public class ArchonDefault extends Mood
     boolean ready;
     public HashMap<Integer, MapLocation> archon_positions;
     public HashMap<Integer, MapLocation> den_positions;
-    public HashMap<Integer, MapLocation> parts_positions;
+    public HashMap<Integer, Pair<MapLocation, Integer>> parts_positions;
     RobotInfo[] hostile;
     FieldController fc;
 
@@ -86,7 +87,7 @@ public class ArchonDefault extends Mood
             }
             if (si.type==SignalType.FOUND_PARTS)
             {
-                parts_positions.put(si.robotID, si.targetLoc);
+                parts_positions.put(si.robotID, new Pair<>(si.targetLoc, si.data));
             }
         }
     }
@@ -132,12 +133,12 @@ public class ArchonDefault extends Mood
     {
         double[] costs = new double[9];
 
-        for (MapLocation parts: parts_positions.values())
+        for (Pair<MapLocation, Integer> parts: parts_positions.values())
         {
-            Direction to = me.directionTo(parts);
+            Direction to = me.directionTo(parts.a);
             if (to != Direction.OMNI)
             {
-                costs[Common.dirToInt(to)] -= 1000 / me.distanceSquaredTo(parts);
+                costs[Common.dirToInt(to)] -= (parts.b * 100) / me.distanceSquaredTo(parts.a);
             }
         }
 
@@ -150,17 +151,21 @@ public class ArchonDefault extends Mood
     {
         int best_dir = fc.findDir(rc.senseNearbyRobots(), init_costs());
         if (best_dir != -1) {
-            if (best_dir == 8) { //here is local minimum, need diff move strat.
-                for (int i = 0; i < 8; i++) {
-                    if (rc.senseRubble(me.add(Common.directions[i])) > 0 && rc.isCoreReady()) {
-                        rc.clearRubble(Common.directions[i]);
+            if (best_dir < 8)
+            {
+                MapLocation dest = me.add(Common.directions[best_dir]);
+                if (!Common.isObstacle(rc, best_dir)){
+                    Common.basicMove(rc, dest);
+                    return true;
+                }
+                else
+                {
+                    if (rc.senseRubble(dest) >= GameConstants.RUBBLE_OBSTRUCTION_THRESH)
+                    {
+                        rc.clearRubble(Common.directions[best_dir]);
                         return true;
                     }
                 }
-            } else if (!Common.isObstacle(rc, best_dir)){
-                MapLocation dest = me.add(Common.directions[best_dir]);
-                Common.basicMove(rc, dest);
-                return true;
             }
         }
         return true;
