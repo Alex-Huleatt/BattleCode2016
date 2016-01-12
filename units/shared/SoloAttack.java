@@ -93,27 +93,24 @@ public class SoloAttack extends Mood
                 closestLocation = den.location;
             }
             // It found targets
-            if (closest != null)
-            {
-                if (rc.canAttackLocation(closestLocation))
-                {
-                    rc.attackLocation(closestLocation);
-                }
-                else
-                {
-                    int best_dir = fc.findDir(rc.senseNearbyRobots(), init_costs());
-                    if (best_dir != -1) {
-                        if (best_dir == 8) { //here is local minimum, need diff move strat.
-                            for (int i = 0; i < 8; i++) {
-                                if (rc.senseRubble(me.add(Common.directions[i])) > 0 && rc.isCoreReady()) {
-                                    rc.clearRubble(Common.directions[i]);
-                                    break;
-                                }
+            int ally_threat = Common.getThreat(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
+            int enemy_threat = Common.getThreat(hostile);
+            if (ally_threat > enemy_threat && closest != null && rc.canAttackLocation(closestLocation)) {
+                rc.attackLocation(closestLocation);
+
+            } else {
+                int best_dir = fc.findDir(rc.senseNearbyRobots(), init_costs());
+                if (best_dir != -1) {
+                    if (best_dir == 8) { //here is local minimum, need diff move strat.
+                        for (int i = 0; i < 8; i++) {
+                            if (rc.senseRubble(me.add(Common.directions[i])) > 0 && rc.isCoreReady()) {
+                                rc.clearRubble(Common.directions[i]);
+                                break;
                             }
-                        } else if (!Common.isObstacle(rc, best_dir)){
-                            MapLocation dest = me.add(Common.directions[best_dir]);
-                            Common.basicMove(rc, dest);
                         }
+                    } else if (!Common.isObstacle(rc, best_dir)){
+                        MapLocation dest = me.add(Common.directions[best_dir]);
+                        Common.basicMove(rc, dest);
                     }
                 }
             }
@@ -140,8 +137,6 @@ public class SoloAttack extends Mood
             }
             costs[8] +=  -1000 / me.distanceSquaredTo(ri.location) * force_mult;
         }
-
-
         return costs;
     }
 
