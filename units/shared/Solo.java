@@ -5,17 +5,21 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import team018.frameworks.comm.Comm;
+import team018.frameworks.comm.SignalInfo;
+import team018.frameworks.comm.SignalType;
 import team018.frameworks.moods.Mood;
 import team018.frameworks.movement.FieldController;
 import team018.frameworks.movement.MovementController;
 import team018.frameworks.util.Common;
+
+import java.util.HashMap;
 
 /**
  * Created by alexhuleatt on 1/4/16.
  *
  * Update by Todd - Guards and Soldiers should both be able to use this
  */
-public class SoloAttack extends Mood
+public class Solo extends Mood
 {
 
     int attackRangeSquared, // unused
@@ -25,8 +29,11 @@ public class SoloAttack extends Mood
     FieldController fc;
     int broadcast_cd;
     Comm c;
+    MapLocation halpLocation = null;
+    HashMap<Integer, MapLocation> archon_positions;
+    int halp_cd;
 
-    public SoloAttack(RobotController rc)
+    public Solo(RobotController rc)
     {
         super(rc);
         rc.setIndicatorString(0, "SoloAttack");
@@ -39,6 +46,8 @@ public class SoloAttack extends Mood
         fc = new FieldController(rc);
         broadcast_cd=0;
         c = new Comm(rc);
+        halp_cd = 0;
+        archon_positions=new HashMap<>();
 
     }
 
@@ -47,6 +56,21 @@ public class SoloAttack extends Mood
         super.update();
         hostile=rc.senseHostileRobots(me, sensorRangeSquared);
         broadcast_cd--;
+        SignalInfo si;
+
+        while ((si = c.receiveSignal()) != null) {
+
+            if (si.type == SignalType.ARCHON_LOC) {
+                archon_positions.put(si.robotID, si.senderLoc);
+            }
+
+            if (si.type == SignalType.HALP && (halpLocation==null || halp_cd <=0 || si.senderLoc.distanceSquaredTo(me)< halpLocation.distanceSquaredTo(me)))
+            {
+                halpLocation = si.senderLoc;
+                halp_cd = 100;
+            }
+        }
+        halp_cd--;
     }
 
     @Override
@@ -97,7 +121,6 @@ public class SoloAttack extends Mood
             int enemy_threat = Common.getThreat(hostile);
             if (ally_threat > enemy_threat && closest != null && rc.canAttackLocation(closestLocation)) {
                 rc.attackLocation(closestLocation);
-
             } else {
                 int best_dir = fc.findDir(rc.senseNearbyRobots(), init_costs());
                 if (best_dir != -1) {
@@ -115,6 +138,7 @@ public class SoloAttack extends Mood
                 }
             }
         }
+
     }
 
     public double[] init_costs() throws Exception{
@@ -128,7 +152,6 @@ public class SoloAttack extends Mood
         } else {
             force_mult = -1;
         }
-
         for (RobotInfo ri : hostile) {
 
             for (int i = 0; i < 8; i++) {
@@ -144,10 +167,12 @@ public class SoloAttack extends Mood
     @Override
     public Mood swing()
     {
-
         if (0 == hostile.length)
         {
             return new Standby(rc);
+        }
+        if (halpLocation!=null && me.distanceSquaredTo(halpLocation)>40) {
+            return new Halper(rc, halpLocation);
         }
         return null;
     }

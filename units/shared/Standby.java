@@ -143,7 +143,7 @@ public class Standby extends Mood
         }
         if (0 < hostile.length)
         {
-            return new SoloAttack(rc);
+            return new Solo(rc);
         }
         return null;
     }
