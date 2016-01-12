@@ -5,6 +5,8 @@ import team018.frameworks.comm.Comm;
 import team018.frameworks.comm.SignalInfo;
 import team018.frameworks.comm.SignalType;
 import team018.frameworks.moods.Mood;
+import team018.frameworks.movement.FieldController;
+import team018.frameworks.util.Common;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -30,6 +32,7 @@ public class ArchonDefault extends Mood
     public HashMap<Integer, MapLocation> den_positions;
     public HashMap<Integer, MapLocation> parts_positions;
     RobotInfo[] hostile;
+    FieldController fc;
 
     static final Direction[] directions = Direction.values();
 
@@ -118,14 +121,53 @@ public class ArchonDefault extends Mood
                 {
                     rc.build(d, type);
                     turnsSinceSpawn = 0;
-                    return false;
+                    return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    protected double[] init_costs()
+    {
+        double[] costs = new double[9];
+
+        for (MapLocation parts: parts_positions.values())
+        {
+            Direction to = me.directionTo(parts);
+            if (to != Direction.OMNI)
+            {
+                costs[Common.dirToInt(to)] -= 1000 / me.distanceSquaredTo(parts);
+            }
+        }
+
+        return costs;
+    }
+
+
+    //  returns true if moved or cleared rubble
+    protected boolean move() throws Exception
+    {
+        int best_dir = fc.findDir(rc.senseNearbyRobots(), init_costs());
+        if (best_dir != -1) {
+            if (best_dir == 8) { //here is local minimum, need diff move strat.
+                for (int i = 0; i < 8; i++) {
+                    if (rc.senseRubble(me.add(Common.directions[i])) > 0 && rc.isCoreReady()) {
+                        rc.clearRubble(Common.directions[i]);
+                        return true;
+                    }
+                }
+            } else if (!Common.isObstacle(rc, best_dir)){
+                MapLocation dest = me.add(Common.directions[best_dir]);
+                Common.basicMove(rc, dest);
+                return true;
             }
         }
         return true;
     }
 
-    protected void healAdjacent() throws Exception
+    //  returns true if healed, false otherwise
+    protected boolean healAdjacent() throws Exception
     {
         RobotInfo[] allies = rc.senseNearbyRobots(sensorRadiusSquared, us);
         int x, y;
@@ -141,15 +183,34 @@ public class ArchonDefault extends Mood
                 if (x * x + y * y <= 2 && robot.type != RobotType.ARCHON)
                 {
                     rc.repair(location);
-                    return;
+                    return true;
                 }
             }
         }
+        return false;
     }
+
 
     public ArchonDefault(RobotController rc)
     {
         super(rc);
+
+        fc = new FieldController(rc);
+
+        rand = new Random(rc.getID());
+        us = rc.getTeam();
+        sensorRadiusSquared = RobotType.ARCHON.sensorRadiusSquared;
+        loc_broadcast_cd=0;
+        c = new Comm(rc);
+        archon_positions=new HashMap<>();
+        den_positions = new HashMap<>();
+        parts_positions = new HashMap<>();
+    }
+
+    public ArchonDefault(RobotController rc, FieldController fc)
+    {
+        super(rc);
+        this.fc = fc;
         rand = new Random(rc.getID());
         us = rc.getTeam();
         sensorRadiusSquared = RobotType.ARCHON.sensorRadiusSquared;
@@ -191,7 +252,10 @@ public class ArchonDefault extends Mood
                 }
                 else
                 {
-                    healAdjacent();
+                    if (!move())
+                    {
+                        healAdjacent();
+                    }
                 }
             }
         }

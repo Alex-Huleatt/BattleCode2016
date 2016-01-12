@@ -78,10 +78,14 @@ public class Halper extends Mood
             double[] init_costs = init_costs();
             int best_dir = fc.findDir(rc.senseNearbyRobots(),init_costs);
             rc.setIndicatorString(1, best_dir+"");
-            if (best_dir != -1 && !Common.isObstacle(rc, best_dir)){
+            if (best_dir != -1)
+            {
                 MapLocation dest = me.add(Common.directions[best_dir]);
-                rc.setIndicatorString(1, "wanna move to " + dest);
-                Common.basicMove(rc, dest);
+                if (!Common.isObstacle(rc, best_dir))
+                {
+                    rc.setIndicatorString(1, "wanna move to " + dest);
+                    Common.basicMove(rc, dest);
+                }
             } else {
                 rc.setIndicatorString(1, "dun wanna move");
             }

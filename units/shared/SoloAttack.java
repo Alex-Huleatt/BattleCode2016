@@ -55,28 +55,38 @@ public class SoloAttack extends Mood
         if (rc.isCoreReady() && rc.isWeaponReady())
         {
             RobotInfo closest = null;
+            RobotInfo den = null;
             MapLocation closestLocation = null;
             MapLocation checkLocation;
             int distance = Integer.MAX_VALUE, checkDistance, x, y;
             for (int i = 0; i < hostile.length; i++)
             {
-                checkLocation = hostile[i].location;
-                checkDistance = me.distanceSquaredTo(checkLocation);
-                if (checkDistance < distance)
+                //  Dens get special behavior
+                //  Only attack them if there are no enemies around
+                if (hostile[i].type == RobotType.ZOMBIEDEN)
                 {
-                    closest = hostile[i];
-                    closestLocation = checkLocation;
-                    distance = checkDistance;
+                    den = hostile[i];
+                }
+                else
+                {
+                    checkLocation = hostile[i].location;
+                    checkDistance = me.distanceSquaredTo(checkLocation);
+                    if (checkDistance < distance)
+                    {
+                        closest = hostile[i];
+                        closestLocation = checkLocation;
+                        distance = checkDistance;
+                    }
                 }
             }
-            // It found nothing. Go back to rally point
-            if (closest == null)
+            // It found only a den
+            if (den != null && closest == null)
             {
-                System.out.println("what");
-                //  TODO
+                closest = den;
+                closestLocation = den.location;
             }
             // It found targets
-            else
+            if (closest != null)
             {
                 if (rc.canAttackLocation(closestLocation))
                 {

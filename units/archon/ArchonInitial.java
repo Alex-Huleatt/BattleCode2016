@@ -13,7 +13,7 @@ import team018.frameworks.moods.Mood;
  */
 public class ArchonInitial extends ArchonDefault
 {
-    static RobotType[] spawnOrder = {
+    static final RobotType[] spawnOrder = {
             RobotType.SCOUT
     };
 
@@ -30,7 +30,6 @@ public class ArchonInitial extends ArchonDefault
         rc.setIndicatorString(0,"Initial");
         if (ready && broadcastLocation())
         {
-            broadcastLocation();
 
             if (buildRobot(spawnOrder[spawnPointer]))
             {
