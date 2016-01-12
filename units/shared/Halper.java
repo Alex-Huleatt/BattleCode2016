@@ -1,6 +1,9 @@
 package team018.units.shared;
 
-import battlecode.common.*;
+import battlecode.common.MapLocation;
+import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 import team018.frameworks.moods.Mood;
 import team018.frameworks.movement.FieldController;
 import team018.frameworks.movement.Force;
@@ -12,7 +15,7 @@ import team018.frameworks.util.Common;
  *
  * Update by Todd - Guards and Soldiers should both be able to use this
  */
-public class SoloAttack extends Mood
+public class Halper extends Mood
 {
 
     int attackRangeSquared, // unused
@@ -20,9 +23,13 @@ public class SoloAttack extends Mood
     MovementController mc;
     RobotInfo[] hostile;
     FieldController fc;
-    public SoloAttack(RobotController rc)
+    MapLocation halpLocation;
+
+    public Halper(RobotController rc, MapLocation halpLocation)
     {
         super(rc);
+        this.halpLocation = halpLocation;
+
         RobotType type = rc.getType();
         attackRangeSquared = type.attackRadiusSquared;
         sensorRangeSquared = type.sensorRadiusSquared;
@@ -83,19 +90,9 @@ public class SoloAttack extends Mood
                 }
                 else
                 {
-                    int best_dir = fc.findDir(rc.senseNearbyRobots(), new double[9]);
+                    int best_dir = fc.findDir(rc.senseNearbyRobots(), new double[8]);
                     if (best_dir != -1) {
-                        if (best_dir == 8) { //here is local minimum, need diff move strat.
-                            for (int i = 0; i < 8; i++) {
-                                if (rc.senseRubble(me.add(Common.directions[i])) > 0 && rc.isCoreReady()) {
-                                    rc.clearRubble(Common.directions[i]);
-                                    break;
-                                }
-                            }
-                        } else if (!Common.isObstacle(rc, best_dir)){
-                            MapLocation dest = me.add(Common.directions[best_dir]);
-                            Common.basicMove(rc, dest);
-                        }
+                        Common.basicMove(rc, me.add(Common.directions[best_dir]));
                     }
                 }
             }
