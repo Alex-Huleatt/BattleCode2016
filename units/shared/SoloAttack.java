@@ -92,6 +92,7 @@ public class SoloAttack extends Mood
                             for (int i = 0; i < 8; i++) {
                                 if (rc.senseRubble(me.add(Common.directions[i])) > 0 && rc.isCoreReady()) {
                                     rc.clearRubble(Common.directions[i]);
+                                    break;
                                 }
                             }
                         } else {

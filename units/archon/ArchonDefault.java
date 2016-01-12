@@ -151,6 +151,7 @@ public class ArchonDefault extends Mood
     @Override
     public void act() throws Exception
     {
+        rc.setIndicatorString(0,"Default");
         if (ready) {
             SignalInfo si;
 
@@ -183,6 +184,10 @@ public class ArchonDefault extends Mood
     @Override
     public Mood swing()
     {
+
+        if (hostile.length > 0) {
+            return new Spooked(rc);
+        }
         return null;
     }
 }

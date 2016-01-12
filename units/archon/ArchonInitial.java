@@ -29,6 +29,7 @@ public class ArchonInitial extends ArchonDefault
     @Override
     public void act() throws Exception
     {
+        rc.setIndicatorString(0,"Initial");
         if (ready && broadcastLocation())
         {
             broadcastLocation();
@@ -49,6 +50,9 @@ public class ArchonInitial extends ArchonDefault
         if (spawnPointer == spawnOrder.length)
         {
             return new ArchonDefault(rc);
+        }
+        if (rc.senseHostileRobots(me, rc.getType().sensorRadiusSquared).length > 0) {
+            return new Spooked(rc);
         }
         return null;
     }
