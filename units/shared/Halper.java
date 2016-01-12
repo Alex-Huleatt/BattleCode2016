@@ -31,6 +31,7 @@ public class Halper extends Mood
     public Halper(RobotController rc, MapLocation halpLocation)
     {
         super(rc);
+        rc.setIndicatorString(0, "Halper");
         this.halpLocation = halpLocation;
         sensorRangeSquared = rc.getType().sensorRadiusSquared;
         mc = new MovementController(rc);
@@ -53,7 +54,6 @@ public class Halper extends Mood
     @Override
     public void act() throws Exception
     {
-        rc.setIndicatorString(0,"Standby");
         if (rc.isCoreReady()) {
             SignalInfo si;
             while ((si = c.receiveSignal()) != null) {
@@ -65,9 +65,7 @@ public class Halper extends Mood
                 if (si.type == SignalType.HALP)
                 {
                     MapLocation newLoc = si.senderLoc;
-                    int dista = me.distanceSquaredTo(halpLocation),
-                        distb = me.distanceSquaredTo(newLoc);
-                    if (distb < dista)
+                    if (me.distanceSquaredTo(newLoc) < me.distanceSquaredTo(halpLocation))
                     {
                         halpLocation = newLoc;
                     }
@@ -116,7 +114,7 @@ public class Halper extends Mood
     @Override
     public Mood swing()
     {
-        if (me.distanceSquaredTo(halpLocation) < 5)
+        if (me.distanceSquaredTo(halpLocation) < 15)
         {
             return new Standby(rc);
         }

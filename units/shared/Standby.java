@@ -34,6 +34,7 @@ public class Standby extends Mood
     public Standby(RobotController rc)
     {
         super(rc);
+        rc.setIndicatorString(0, "Standby");
         sensorRangeSquared = rc.getType().sensorRadiusSquared;
         mc = new MovementController(rc);
         fc = new FieldController(rc);
@@ -55,7 +56,6 @@ public class Standby extends Mood
     @Override
     public void act() throws Exception
     {
-        rc.setIndicatorString(0,"Standby");
         if (rc.isCoreReady()) {
             SignalInfo si;
             while ((si = c.receiveSignal()) != null) {

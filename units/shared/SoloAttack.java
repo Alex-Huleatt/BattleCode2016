@@ -23,6 +23,7 @@ public class SoloAttack extends Mood
     public SoloAttack(RobotController rc)
     {
         super(rc);
+        rc.setIndicatorString(0, "SoloAttack");
         RobotType type = rc.getType();
         attackRangeSquared = type.attackRadiusSquared;
         sensorRangeSquared = type.sensorRadiusSquared;
