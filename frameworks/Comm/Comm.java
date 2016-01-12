@@ -59,6 +59,8 @@ public class Comm {
             }
 
             si.data = details[1];
+        } else {
+            si.basic=true;
         }
         si.senderLoc=s.getLocation();
         si.senderTeam=s.getTeam();

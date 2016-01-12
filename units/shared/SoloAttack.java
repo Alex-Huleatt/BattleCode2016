@@ -4,6 +4,7 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
+import team018.frameworks.comm.Comm;
 import team018.frameworks.moods.Mood;
 import team018.frameworks.movement.FieldController;
 import team018.frameworks.movement.MovementController;
@@ -22,6 +23,9 @@ public class SoloAttack extends Mood
     MovementController mc;
     RobotInfo[] hostile;
     FieldController fc;
+    int broadcast_cd;
+    Comm c;
+
     public SoloAttack(RobotController rc)
     {
         super(rc);
@@ -33,6 +37,8 @@ public class SoloAttack extends Mood
 
 
         fc = new FieldController(rc);
+        broadcast_cd=0;
+        c = new Comm(rc);
 
     }
 
@@ -40,11 +46,16 @@ public class SoloAttack extends Mood
     public void update() {
         super.update();
         hostile=rc.senseHostileRobots(me, sensorRangeSquared);
+        broadcast_cd--;
     }
 
     @Override
     public void act() throws Exception
     {
+        if (broadcast_cd<=0){
+            rc.broadcastSignal(300);
+            broadcast_cd=10;
+        }
 
         // If it can attack, try!
         if (rc.isCoreReady() && rc.isWeaponReady())
@@ -74,6 +85,7 @@ public class SoloAttack extends Mood
                     }
                 }
             }
+
             // It found only a den
             if (den != null && closest == null)
             {
@@ -123,7 +135,8 @@ public class SoloAttack extends Mood
         for (RobotInfo ri : hostile) {
 
             for (int i = 0; i < 8; i++) {
-                costs[i] += -1000 / me.add(Common.directions[i]).distanceSquaredTo(ri.location) * force_mult;
+                int dist = me.add(Common.directions[i]).distanceSquaredTo(ri.location);
+                if (dist!=0)costs[i] += -1000 / dist * force_mult;
             }
             costs[8] +=  -1000 / me.distanceSquaredTo(ri.location) * force_mult;
         }

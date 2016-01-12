@@ -13,6 +13,7 @@ public class SignalInfo {
     public MapLocation senderLoc = new MapLocation(-1,-1);
     public Team senderTeam = Team.A;
     public int robotID = -1;
+    public boolean basic=false;
 
     public int data = -1;
 

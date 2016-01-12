@@ -11,6 +11,7 @@ import team018.frameworks.movement.FieldController;
 import team018.frameworks.movement.MovementController;
 import team018.frameworks.util.Common;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -29,7 +30,7 @@ public class Standby extends Mood
     int avgX,avgY, moves;
     int last_dir;
     MapLocation halpLocation = null;
-
+    double[] lingering;
     public Standby(RobotController rc)
     {
         super(rc);
@@ -43,12 +44,17 @@ public class Standby extends Mood
         avgY = me.y;
         moves = 1;
         archon_positions=new HashMap<>();
+
+        lingering=new double[8];
     }
 
     @Override
     public void update() {
         super.update();
         hostile = rc.senseHostileRobots(me, sensorRangeSquared);
+        for (int i = 0; i < 8; i++) {
+            lingering[i] *=.8;
+        }
 
     }
 
@@ -57,6 +63,7 @@ public class Standby extends Mood
     {
         if (rc.isCoreReady()) {
             SignalInfo si;
+            ArrayList<MapLocation> signaling_allies = new ArrayList<>();
             while ((si = c.receiveSignal()) != null) {
 
                 if (si.type == SignalType.ARCHON_LOC) {
@@ -67,8 +74,12 @@ public class Standby extends Mood
                 {
                     halpLocation = si.senderLoc;
                 }
+
+                if (si.basic && si.senderTeam == team) {
+                    signaling_allies.add(si.senderLoc);
+                }
             }
-            double[] init_costs = init_costs();
+            double[] init_costs = init_costs(signaling_allies);
             int best_dir = fc.findDir(rc.senseNearbyRobots(),init_costs);
             rc.setIndicatorString(1, best_dir+"");
             if (best_dir != -1 && !Common.isObstacle(rc, best_dir)){
@@ -84,7 +95,7 @@ public class Standby extends Mood
     }
 
 
-    private double[] init_costs() throws Exception {
+    private double[] init_costs(ArrayList<MapLocation> signaling_allies) throws Exception {
         //want to do a non-linear cost to stay at specific distance from archon.
 
         double[] costs = new double[8];
@@ -94,6 +105,12 @@ public class Standby extends Mood
             if (nearest==null || m.distanceSquaredTo(me) < distsqr) {
                 nearest=m;
                 distsqr=m.distanceSquaredTo(me);
+            }
+        }
+        for (MapLocation m : signaling_allies) {
+            for (int i = 0; i < 8; i++) {
+                MapLocation t = me.add(Common.directions[i]);
+                if (!m.equals(t)) lingering[i] += -10000 / t.distanceSquaredTo(m);
             }
         }
         //System.out.println(nearest);
@@ -111,6 +128,8 @@ public class Standby extends Mood
 
                     if (vy1*vx2 > vx1*vy2) costs[i]+= 3000; //Cross product thing. checks clockwise or counter.
             }
+            costs[i]+=lingering[i];
+
         }
         return costs;
     }
