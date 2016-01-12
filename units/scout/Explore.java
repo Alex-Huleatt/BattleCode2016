@@ -28,6 +28,7 @@ public class Explore extends Mood {
 
     FieldController fc;
     BitSet visited;
+    int part_report_cd;
     Comm c;
     HashMap<Integer, MapLocation> archon_positions;
     HashMap<Integer, Integer> broadcast_cds;
@@ -59,6 +60,7 @@ public class Explore extends Mood {
 
         archon_positions= new HashMap<>();
         broadcast_cds=new HashMap<>();
+        part_report_cd = 0;
     }
 
     @Override
@@ -100,12 +102,13 @@ public class Explore extends Mood {
             for (int i = 0; i < 8; i++) {
                 t = me.add(Common.directions[i]);
                 double parts = rc.senseParts(t);
-                if (parts > 0) {
+                if (parts > 0 && part_report_cd<=0) {
                     si = new SignalInfo();
                     si.targetLoc=t;
                     si.type=SignalType.FOUND_PARTS;
                     si.data=(int)(parts*1000);
-                    c.sendSignal(si, 2000);
+                    c.sendSignal(si, 100);
+                    part_report_cd=45;
                 }
 
                 adj_costs[i] += 1000.0/t.distanceSquaredTo(avg);
@@ -116,7 +119,7 @@ public class Explore extends Mood {
                     adj_costs[i] += 700.0/t.distanceSquaredTo(m);
                 }
             }
-
+            part_report_cd--;
 
 
             int best_dir = fc.findDir(nearby, adj_costs);

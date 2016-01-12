@@ -56,7 +56,11 @@ public class FieldController {
 
         int mindex = 0;
         int count = 1;
+        boolean hereBool = (costs.length > 8);
         for (RobotInfo ri : rarr) {
+            if (hereBool) {
+                costs[8]+=applyRobot(ri,me);
+            }
             for (int i = 0; i < 8; i++) {
                 if (rc.canMove(Common.directions[i])) {
                     costs[i]+=applyRobot(ri,me.add(Common.directions[i]));
@@ -64,7 +68,7 @@ public class FieldController {
                 }
             }
         }
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < costs.length; i++) {
             if (costs[i] < costs[mindex]) {
                 mindex = i;
                 count = 1;

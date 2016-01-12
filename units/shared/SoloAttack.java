@@ -86,9 +86,17 @@ public class SoloAttack extends Mood
                 }
                 else
                 {
-                    int best_dir = fc.findDir(rc.senseNearbyRobots(), new double[8]);
+                    int best_dir = fc.findDir(rc.senseNearbyRobots(), new double[9]);
                     if (best_dir != -1) {
-                        Common.basicMove(rc, me.add(Common.directions[best_dir]));
+                        if (best_dir == 8) { //here is local minimum, need diff move strat.
+                            for (int i = 0; i < 8; i++) {
+                                if (rc.senseRubble(me.add(Common.directions[i])) > 0 && rc.isCoreReady()) {
+                                    rc.clearRubble(Common.directions[i]);
+                                }
+                            }
+                        } else {
+                            Common.basicMove(rc, me.add(Common.directions[best_dir]));
+                        }
                     }
                 }
             }
