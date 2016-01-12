@@ -86,4 +86,40 @@ public class Common {
         return isObstacle(rc, directions[dir]);
     }
 
+
+    public static int getThreat( RobotInfo[] bots) throws Exception {
+        int total = 0;
+        for (RobotInfo r : bots) {
+            total += getThreatLevel(r);
+        }
+        return total;
+    }
+
+
+    public static int getThreatLevel(RobotInfo info) {
+        switch (info.type) {
+            case SOLDIER:
+                return 2;
+            case GUARD:
+                return 2;
+            case BIGZOMBIE:
+                return 5;
+            case FASTZOMBIE:
+                return 1;
+            case RANGEDZOMBIE:
+                return 3;
+            case TURRET:
+                return 4;
+            case VIPER:
+                return 4;
+            case ARCHON:
+                return -2;
+
+
+
+            default:
+                return 0;
+        }
+    }
+
 }

@@ -147,7 +147,7 @@ public class ArchonDefault extends Mood
 
 
     //  returns true if moved or cleared rubble
-    protected boolean move() throws Exception
+    public boolean move() throws Exception
     {
         int best_dir = fc.findDir(rc.senseNearbyRobots(), init_costs());
         if (best_dir != -1) {

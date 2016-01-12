@@ -1,9 +1,11 @@
 package team018.units.shared;
 
-import battlecode.common.*;
+import battlecode.common.MapLocation;
+import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 import team018.frameworks.moods.Mood;
 import team018.frameworks.movement.FieldController;
-import team018.frameworks.movement.Force;
 import team018.frameworks.movement.MovementController;
 import team018.frameworks.util.Common;
 
@@ -31,13 +33,6 @@ public class SoloAttack extends Mood
 
 
         fc = new FieldController(rc);
-        Force stdForce = new Force(rc) {
-            @Override
-            public double enemy(MapLocation source, MapLocation t) {
-                return -1000.0 / source.distanceSquaredTo(t);
-            }
-        };
-        fc.addForce(stdForce, RobotType.values());
 
     }
 
@@ -94,7 +89,7 @@ public class SoloAttack extends Mood
                 }
                 else
                 {
-                    int best_dir = fc.findDir(rc.senseNearbyRobots(), new double[9]);
+                    int best_dir = fc.findDir(rc.senseNearbyRobots(), init_costs());
                     if (best_dir != -1) {
                         if (best_dir == 8) { //here is local minimum, need diff move strat.
                             for (int i = 0; i < 8; i++) {
@@ -113,10 +108,35 @@ public class SoloAttack extends Mood
         }
     }
 
+    public double[] init_costs() throws Exception{
+        double[] costs = new double[9];
+        RobotInfo[] allies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
+        int ally_threat = Common.getThreat(allies);
+        int enemy_threat = Common.getThreat(hostile);
+        double force_mult;
+        if (ally_threat > enemy_threat) {
+            force_mult = 1;
+        } else {
+            force_mult = -1;
+        }
+
+        for (RobotInfo ri : hostile) {
+
+            for (int i = 0; i < 8; i++) {
+                costs[i] += -1000 / me.add(Common.directions[i]).distanceSquaredTo(ri.location) * force_mult;
+            }
+            costs[8] +=  -1000 / me.distanceSquaredTo(ri.location) * force_mult;
+        }
+
+
+        return costs;
+    }
+
 
     @Override
     public Mood swing()
     {
+
         if (0 == hostile.length)
         {
             return new Standby(rc);
