@@ -3,6 +3,7 @@ package team018.units.turret;
 import battlecode.common.GameConstants;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import battlecode.common.RobotType;
 import team018.frameworks.comm.Comm;
 import team018.frameworks.comm.SignalInfo;
 import team018.frameworks.comm.SignalType;
@@ -15,6 +16,8 @@ public class TeamTurret extends Mood
 {
     Comm c;
     MapLocation target;
+    final static int TIMEOUT = 1;
+    int cd = TIMEOUT; //  timeout of the current location
     public TeamTurret (RobotController rc, MapLocation target)
     {
         super(rc);
@@ -22,24 +25,31 @@ public class TeamTurret extends Mood
         this.target = target;
     }
 
+    private boolean isRecent(int turn)
+    {
+        return turn < TIMEOUT + rc.getRoundNum();
+    }
+
     @Override
     public void update()
     {
         super.update();
-
-        //  listen for more
-        if (target == null)
+        if (target == null || 0 >= --cd)
         {
-            SignalInfo si;
+            SignalInfo si, newest = null;
 
             while ((si = c.receiveSignal()) != null)
             {
 
-                //  6 = 2 attacking rounds for a turret
-                if (si.type == SignalType.ATTACK)// && si.data < 6)
+                if (si.type == SignalType.ATTACK
+                        //  can actually attack?
+                        && me.distanceSquaredTo(si.targetLoc) <= RobotType.TURRET.attackRadiusSquared
+                        && (newest == null || newest.data < si.data)
+                        )
                 {
                     target = si.targetLoc;
-                    return;
+                    cd = TIMEOUT;
+                    newest = si;
                 }
             }
         }
@@ -49,6 +59,7 @@ public class TeamTurret extends Mood
     public void act() throws Exception
     {
         rc.setIndicatorString(0, "Team");
+        rc.setIndicatorString(1, target.toString());
 
         if (rc.isCoreReady() && rc.isWeaponReady() && rc.canAttackLocation(target)
                 && GameConstants.TURRET_MINIMUM_RANGE <= me.distanceSquaredTo(target))

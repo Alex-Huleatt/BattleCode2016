@@ -39,7 +39,8 @@ public class SoloTurret extends Mood
 
         while ((si = c.receiveSignal()) != null) {
 
-            if (si.type == SignalType.ATTACK && si.data < 6)
+            if (si.type == SignalType.ATTACK || si.data < TeamTurret.TIMEOUT + rc.getRoundNum()
+                    && me.distanceSquaredTo(si.targetLoc) <= RobotType.TURRET.attackRadiusSquared)
             {
                 target = si.targetLoc;
                 //  swing, because now we want to attack together
