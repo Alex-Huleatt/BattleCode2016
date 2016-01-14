@@ -44,10 +44,10 @@ public class ArchonDefault extends Mood
     public enum SpawnRatio
     {
         SOLDIER (RobotType.SOLDIER, 65),
-        GUARD   (RobotType.GUARD,   25),
+        GUARD   (RobotType.GUARD,    5),
         VIPER   (RobotType.VIPER,    0),
-        TURRET  (RobotType.TURRET,  10),
-        SCOUT   (RobotType.SCOUT,   0);
+        TURRET  (RobotType.TURRET,  20),
+        SCOUT   (RobotType.SCOUT,   10);
 
         RobotType type;
         int odds;

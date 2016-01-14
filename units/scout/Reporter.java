@@ -76,6 +76,7 @@ public class Reporter extends Mood
             SignalInfo si = new SignalInfo();
             si.targetLoc = location;
             si.type = SignalType.ATTACK;
+            si.data = rc.getRoundNum();
             c.sendSignal(si, RobotType.SCOUT.sensorRadiusSquared);
         }
     }
