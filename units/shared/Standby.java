@@ -82,10 +82,14 @@ public class Standby extends Mood
             double[] init_costs = init_costs(signaling_allies);
             int best_dir = fc.findDir(rc.senseNearbyRobots(),init_costs);
             rc.setIndicatorString(1, best_dir+"");
-            if (best_dir != -1 && !Common.isObstacle(rc, best_dir)){
-                MapLocation dest = me.add(Common.directions[best_dir]);
-                rc.setIndicatorString(1, "wanna move to " + dest);
-                Common.basicMove(rc, dest);
+            if (best_dir != -1) {
+               if (!Common.isObstacle(rc, best_dir)) {
+                   MapLocation dest = me.add(Common.directions[best_dir]);
+                   rc.setIndicatorString(1, "wanna move to " + dest);
+                   Common.basicMove(rc, dest);
+               } else {
+                   rc.clearRubble(Common.directions[best_dir]);
+               }
             } else {
                 rc.setIndicatorString(1, "dun wanna move");
             }

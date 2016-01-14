@@ -107,7 +107,6 @@ public class ArchonDefault extends Mood
             //System.out.println("broadcasted");
             return false;
         } else {
-            loc_broadcast_cd--;
             return true;
         }
     }
@@ -144,7 +143,7 @@ public class ArchonDefault extends Mood
 
             for (int i = 0; i < 8; i++) {
                 MapLocation to = me.add(Common.directions[i]);
-                costs[i] -= (parts.b * 30000.0) / to.distanceSquaredTo(parts.a);
+                costs[i] -= (parts.b * 3000.0) / to.distanceSquaredTo(parts.a);
             }
 
         }
@@ -254,7 +253,7 @@ public class ArchonDefault extends Mood
         ready = rc.isCoreReady();
         hostile = rc.senseHostileRobots(me, rc.getType().sensorRadiusSquared);
         neutrals = rc.senseNearbyRobots(sensorRadiusSquared, Team.NEUTRAL);
-
+        loc_broadcast_cd--;
     }
 
     @Override

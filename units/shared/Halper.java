@@ -85,6 +85,10 @@ public class Halper extends Mood
                 {
                     rc.setIndicatorString(1, "wanna move to " + dest);
                     Common.basicMove(rc, dest);
+                } else {
+                    if (rc.senseRubble(dest) > 0) {
+                        rc.clearRubble(Common.directions[best_dir]);
+                    }
                 }
             } else {
                 rc.setIndicatorString(1, "dun wanna move");
