@@ -59,7 +59,7 @@ public class Spooked extends ArchonDefault {
         rc.setIndicatorString(0,":O");
         int toGo = fc.findDir(rc.senseNearbyRobots(), new double[8]);
 
-        if (rc.canMove(Common.directions[toGo])) {
+        if (rc.canMove(Common.directions[toGo]) && toGo != -1) {
             Common.basicMove(rc,me.add(Common.directions[toGo]));
             rc.setIndicatorString(1,""+toGo);
         } else {
