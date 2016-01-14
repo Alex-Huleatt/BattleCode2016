@@ -77,7 +77,7 @@ public class Common {
         if (m==null)return;
         Direction d = rc.getLocation().directionTo(m);
         // canMove() sometimes returns true, even when the destination location is occupied, so we gotta do an extra check
-        if (rc.canMove(d) && rc.isCoreReady() && (rc.senseRobotAtLocation(m) != null)) {
+        if (rc.canMove(d) && rc.isCoreReady() && (rc.senseRobotAtLocation(m) == null)) {
             rc.move(d);
         }
     }
