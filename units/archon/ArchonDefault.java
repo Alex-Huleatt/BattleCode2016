@@ -33,6 +33,7 @@ public class ArchonDefault extends Mood
     public HashMap<Integer, MapLocation> den_positions;
     public HashMap<Integer, Pair<MapLocation, Integer>> parts_positions;
     RobotInfo[] hostile;
+    RobotInfo[] neutrals;
     FieldController fc;
 
     static final Direction[] directions = Direction.values();
@@ -142,6 +143,15 @@ public class ArchonDefault extends Mood
             }
         }
 
+        for (RobotInfo neutral: neutrals)
+        {
+            Direction to = me.directionTo(neutral.location);
+            if (to != Direction.OMNI)
+            {
+                costs[Common.dirToInt(to)] -= 1000 / me.distanceSquaredTo(neutral.location);
+            }
+        }
+
         return costs;
     }
 
@@ -233,6 +243,7 @@ public class ArchonDefault extends Mood
 
         ready = rc.isCoreReady();
         hostile = rc.senseHostileRobots(me, rc.getType().sensorRadiusSquared);
+        neutrals = rc.senseNearbyRobots(sensorRadiusSquared, Team.NEUTRAL);
     }
 
     @Override
@@ -251,13 +262,26 @@ public class ArchonDefault extends Mood
                 {
                     toSpawn = decideSpawn((rand.nextInt() % 100 + 100) % 100);
                 }
+
                 if (buildRobot(toSpawn))
                 {
                     toSpawn = null;
                 }
                 else
                 {
-                    if (!move())
+                    if (0 < neutrals.length)
+                    {
+                        for (RobotInfo neutral: neutrals)
+                        {
+                            if (me.distanceSquaredTo(neutral.location )
+                                    <= GameConstants.ARCHON_ACTIVATION_RANGE)
+                            {
+                                rc.activate(neutral.location);
+                                break;
+                            }
+                        }
+                    }
+                    else if (!move())
                     {
                         healAdjacent();
                     }
