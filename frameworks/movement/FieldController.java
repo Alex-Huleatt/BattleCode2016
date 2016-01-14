@@ -13,6 +13,7 @@ import java.util.Random;
 public class FieldController {
 
     public ArrayList<ArrayList<Force>> forces;
+    public ArrayList<Force> all_forces;
     public final RobotController rc;
     public boolean can_fly = false;
     Random r;
@@ -24,6 +25,7 @@ public class FieldController {
             forces.add(new ArrayList<>());
         }
         r = new Random(rc.getID());
+        all_forces=new ArrayList<>();
     }
 
     public void addForce(Force f, RobotType[] rts) {
@@ -31,6 +33,7 @@ public class FieldController {
             int or = rt.ordinal();
             forces.get(rt.ordinal()).add(f);
         }
+        all_forces.add(f);
     }
 
     private double applyRobot(RobotInfo ri, MapLocation m) {
@@ -52,6 +55,14 @@ public class FieldController {
             if ((!can_fly && Common.isObstacle(rc, Common.directions[i])) || !rc.canMove(Common.directions[i])) {
                 costs[i] = Double.POSITIVE_INFINITY;
             }
+        }
+
+        for (Force f : all_forces) {
+            for (int i = 0; i < 8; i++) {
+                MapLocation t = me.add(Common.directions[i]);
+                costs[i]+=f.misc(t);
+            }
+
         }
 
         int mindex = 0;

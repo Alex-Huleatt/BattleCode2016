@@ -19,4 +19,6 @@ public abstract class Force {
     }
 
     public double enemy(MapLocation source, MapLocation t) { return 0.0; }
+
+    public double misc(MapLocation t) { return 0.0; }
 }
