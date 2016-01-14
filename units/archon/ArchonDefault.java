@@ -43,8 +43,8 @@ public class ArchonDefault extends Mood
     //  The likelihood of spawning any unit during default behavior
     public enum SpawnRatio
     {
-        SOLDIER (RobotType.SOLDIER, 45),
-        GUARD   (RobotType.GUARD,   45),
+        SOLDIER (RobotType.SOLDIER, 65),
+        GUARD   (RobotType.GUARD,   25),
         VIPER   (RobotType.VIPER,    0),
         TURRET  (RobotType.TURRET,  10),
         SCOUT   (RobotType.SCOUT,   0);
