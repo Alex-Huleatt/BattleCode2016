@@ -29,7 +29,7 @@ public class Spooked extends ArchonDefault {
         Force stdForce = new Force(rc) {
             @Override
             public double enemy(MapLocation source, MapLocation t) {
-                return 1000.0 / source.distanceSquaredTo(t);
+                return 3000.0 / source.distanceSquaredTo(t);
             }
         };
         fc.addForce(stdForce, RobotType.values());
@@ -57,16 +57,14 @@ public class Spooked extends ArchonDefault {
         SignalInfo halp_signal = new SignalInfo();
         halp_signal.type = SignalType.HALP;
         rc.setIndicatorString(0,":O");
-        int toGo = fc.findDir(rc.senseNearbyRobots(), new double[9]);
+        int toGo = fc.findDir(rc.senseNearbyRobots(), new double[8]);
 
-        if (toGo==8 || rc.canMove(Common.directions[toGo])) {
-            if (toGo!=8) {
-                Common.basicMove(rc,me.add(Common.directions[toGo]));
-            } else {
-                c.sendSignal(halp_signal,2000);
-            }
+        if (rc.canMove(Common.directions[toGo])) {
+            Common.basicMove(rc,me.add(Common.directions[toGo]));
+            rc.setIndicatorString(1,""+toGo);
         } else {
             c.sendSignal(halp_signal,2000);
+            if (rc.senseRubble(me.add(Common.directions[toGo]))>0)rc.clearRubble(Common.directions[toGo]);
         }
 
 
