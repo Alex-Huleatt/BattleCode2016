@@ -6,7 +6,6 @@ import team018.frameworks.comm.SignalInfo;
 import team018.frameworks.comm.SignalType;
 import team018.frameworks.moods.Mood;
 import team018.frameworks.movement.FieldController;
-import team018.frameworks.movement.Force;
 import team018.frameworks.util.Common;
 
 /**
@@ -77,7 +76,7 @@ public class Reporter extends Mood
             si.targetLoc = location;
             si.type = SignalType.ATTACK;
             si.data = rc.getRoundNum();
-            c.sendSignal(si, RobotType.SCOUT.sensorRadiusSquared);
+            c.sendSignal(si, 100);
         }
     }
 }

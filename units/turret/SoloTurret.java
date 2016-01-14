@@ -41,7 +41,6 @@ public class SoloTurret extends Mood
 
             if (si.type == SignalType.ATTACK && si.data < 6)
             {
-                System.out.println("hi");
                 target = si.targetLoc;
                 //  swing, because now we want to attack together
                 return;

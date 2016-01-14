@@ -38,6 +38,7 @@ public class Standby extends Mood
         sensorRangeSquared = rc.getType().sensorRadiusSquared;
         mc = new MovementController(rc);
         fc = new FieldController(rc);
+        fc.can_fly=true;
         c = new Comm(rc);
         me = rc.getLocation();
         avgX = me.x;
@@ -53,7 +54,7 @@ public class Standby extends Mood
         super.update();
         hostile = rc.senseHostileRobots(me, sensorRangeSquared);
         for (int i = 0; i < 8; i++) {
-            lingering[i] *=.8;
+            lingering[i] *=.6;
         }
 
     }
@@ -114,7 +115,7 @@ public class Standby extends Mood
         for (MapLocation m : signaling_allies) {
             for (int i = 0; i < 8; i++) {
                 MapLocation t = me.add(Common.directions[i]);
-                if (!m.equals(t)) lingering[i] += -10000 / t.distanceSquaredTo(m);
+                if (!m.equals(t)) lingering[i] += -3000 / t.distanceSquaredTo(m);
             }
         }
         //System.out.println(nearest);
