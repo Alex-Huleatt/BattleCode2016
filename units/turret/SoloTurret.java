@@ -1,6 +1,9 @@
 package team018.units.turret;
 
 import battlecode.common.*;
+import team018.frameworks.comm.Comm;
+import team018.frameworks.comm.SignalType;
+import team018.frameworks.comm.SignalInfo;
 import team018.frameworks.moods.Mood;
 import team018.frameworks.movement.MovementController;
 
@@ -10,16 +13,18 @@ import team018.frameworks.movement.MovementController;
  */
 public class SoloTurret extends Mood
 {
-
+    Comm c;
     int attackRangeSquared, // unused
         sensorRangeSquared,
         attackRangeMin;
     MovementController mc;
     RobotInfo[] hostile;
+    MapLocation target = null;
+
     public SoloTurret(RobotController rc)
     {
         super(rc);
-        RobotType type = rc.getType();
+        c = new Comm(rc);
         attackRangeSquared = RobotType.TURRET.attackRadiusSquared;
         sensorRangeSquared = RobotType.TURRET.sensorRadiusSquared;
         attackRangeMin  = GameConstants.TURRET_MINIMUM_RANGE;
@@ -29,6 +34,20 @@ public class SoloTurret extends Mood
     @Override
     public void update() {
         super.update();
+
+        SignalInfo si;
+
+        while ((si = c.receiveSignal()) != null) {
+
+            if (si.type == SignalType.ATTACK && si.data < 6)
+            {
+                System.out.println("hi");
+                target = si.targetLoc;
+                //  swing, because now we want to attack together
+                return;
+            }
+        }
+
         hostile = rc.senseHostileRobots(me, sensorRangeSquared);
     }
 
@@ -36,13 +55,12 @@ public class SoloTurret extends Mood
     public void act() throws Exception
     {
 
+        rc.setIndicatorString(0, "Solo");
+
+
         // If it can attack, try!
         if (rc.isCoreReady() && rc.isWeaponReady())
         {
-
-
-            rc.setIndicatorString(0, "Robots: " + hostile.length);
-
             RobotInfo closest = null;
             MapLocation closestLocation = null, checkLocation;
             int distance = Integer.MAX_VALUE, checkDistance, x, y;
@@ -63,7 +81,6 @@ public class SoloTurret extends Mood
             }
             if (closest != null)
             {
-                rc.setIndicatorString(1, "Targetting " + closest.location.toString());
                 if (rc.canAttackLocation(closestLocation))
                 {
                     rc.attackLocation(closestLocation);
@@ -77,7 +94,10 @@ public class SoloTurret extends Mood
     @Override
     public Mood swing()
     {
-        //  In the future this should allow for GroupAttack mood
+        if (target != null)
+        {
+            return new TeamTurret(rc, target);
+        }
         return null;
     }
 }

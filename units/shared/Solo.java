@@ -1,9 +1,6 @@
 package team018.units.shared;
 
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
-import battlecode.common.RobotInfo;
-import battlecode.common.RobotType;
+import battlecode.common.*;
 import team018.frameworks.comm.Comm;
 import team018.frameworks.comm.SignalInfo;
 import team018.frameworks.comm.SignalType;
@@ -65,7 +62,8 @@ public class Solo extends Mood
                 archon_positions.put(si.robotID, si.senderLoc);
             }
 
-            if (si.type == SignalType.HALP && (halpLocation==null || halp_cd <=0 || si.senderLoc.distanceSquaredTo(me)< halpLocation.distanceSquaredTo(me)))
+            if (si.type == SignalType.HALP && (halpLocation==null || halp_cd <=0
+                    || si.senderLoc.distanceSquaredTo(me)< halpLocation.distanceSquaredTo(me)))
             {
                 halpLocation = si.senderLoc;
                 halp_cd = 100;
@@ -86,37 +84,24 @@ public class Solo extends Mood
         if (rc.isCoreReady() && rc.isWeaponReady())
         {
             RobotInfo closest = null;
-            RobotInfo den = null;
+            int priority = Integer.MIN_VALUE;
             MapLocation closestLocation = null;
             MapLocation checkLocation;
-            int distance = Integer.MAX_VALUE, checkDistance, x, y;
+            int distance = Integer.MAX_VALUE, checkDistance;
             for (int i = 0; i < hostile.length; i++)
             {
-                //  Dens get special behavior
-                //  Only attack them if there are no enemies around
-                if (hostile[i].type == RobotType.ZOMBIEDEN)
+                checkLocation = hostile[i].location;
+                checkDistance = me.distanceSquaredTo(checkLocation);
+                int checkPriority = Common.getAttackPriority(hostile[i]);
+                if (priority < checkPriority || checkDistance < distance)
                 {
-                    den = hostile[i];
-                }
-                else
-                {
-                    checkLocation = hostile[i].location;
-                    checkDistance = me.distanceSquaredTo(checkLocation);
-                    if (checkDistance < distance)
-                    {
-                        closest = hostile[i];
-                        closestLocation = checkLocation;
-                        distance = checkDistance;
-                    }
+                    closest = hostile[i];
+                    closestLocation = checkLocation;
+                    distance = checkDistance;
+                    priority = checkPriority;
                 }
             }
 
-            // It found only a den
-            if (den != null && closest == null)
-            {
-                closest = den;
-                closestLocation = den.location;
-            }
             // It found targets
             int ally_threat = Common.getThreat(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
             int enemy_threat = Common.getThreat(hostile);
@@ -135,7 +120,7 @@ public class Solo extends Mood
                     } else if (!Common.isObstacle(rc, best_dir)){
                         MapLocation dest = me.add(Common.directions[best_dir]);
                         Common.basicMove(rc, dest);
-                    } else {
+                    } else if (rc.senseRubble(me.add(Common.directions[best_dir])) > GameConstants.RUBBLE_SLOW_THRESH){
                         rc.clearRubble(Common.directions[best_dir]);
                     }
                 }
