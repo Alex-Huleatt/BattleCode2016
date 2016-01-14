@@ -76,8 +76,9 @@ public class Common {
     public static void basicMove(RobotController rc, MapLocation m) throws Exception {
         if (m==null)return;
         Direction d = rc.getLocation().directionTo(m);
-        if (rc.canMove(d) && rc.isCoreReady()) {
-            rc.move(d); //  this still throws an error somehow
+        // canMove() sometimes returns true, even when the destination location is occupied, so we gotta do an extra check
+        if (rc.canMove(d) && rc.isCoreReady() && (rc.senseRobotAtLocation(m) == null)) {
+            rc.move(d);
         }
     }
     
