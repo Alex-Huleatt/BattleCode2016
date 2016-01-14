@@ -91,7 +91,6 @@ public class ArchonDefault extends Mood
             if (si.type==SignalType.FOUND_PARTS)
             {
                 parts_positions.add(new Pair<>(si.targetLoc, si.data));
-
             }
         }
     }

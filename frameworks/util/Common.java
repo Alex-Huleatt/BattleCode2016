@@ -87,7 +87,7 @@ public class Common {
     }
 
 
-    public static int getThreat( RobotInfo[] bots) throws Exception {
+    public static int getThreat(RobotInfo[] bots) throws Exception {
         int total = 0;
         for (RobotInfo r : bots) {
             total += getThreatLevel(r);
@@ -114,9 +114,6 @@ public class Common {
                 return 4;
             case ARCHON:
                 return -2;
-
-
-
             default:
                 return 0;
         }
