@@ -9,7 +9,9 @@ import team018.frameworks.movement.FieldController;
 import team018.frameworks.util.Common;
 import team018.frameworks.util.Pair;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
 
 /**
@@ -31,7 +33,7 @@ public class ArchonDefault extends Mood
     boolean ready;
     public HashMap<Integer, MapLocation> archon_positions;
     public HashMap<Integer, MapLocation> den_positions;
-    public HashMap<Integer, Pair<MapLocation, Integer>> parts_positions;
+    public HashSet<Pair<MapLocation, Integer>> parts_positions;
     RobotInfo[] hostile;
     RobotInfo[] neutrals;
     FieldController fc;
@@ -88,7 +90,8 @@ public class ArchonDefault extends Mood
             }
             if (si.type==SignalType.FOUND_PARTS)
             {
-                parts_positions.put(si.robotID, new Pair<>(si.targetLoc, si.data));
+                parts_positions.add(new Pair<>(si.targetLoc, si.data));
+
             }
         }
     }
@@ -134,12 +137,12 @@ public class ArchonDefault extends Mood
     {
         double[] costs = new double[9];
 
-        for (Pair<MapLocation, Integer> parts: parts_positions.values())
+        for (Pair<MapLocation, Integer> parts: parts_positions)
         {
             Direction to = me.directionTo(parts.a);
             if (to != Direction.OMNI)
             {
-                costs[Common.dirToInt(to)] -= (parts.b * 100) / me.distanceSquaredTo(parts.a);
+                costs[Common.dirToInt(to)] -= (parts.b * 3000000.0) / me.distanceSquaredTo(parts.a);
             }
         }
 
@@ -151,7 +154,7 @@ public class ArchonDefault extends Mood
                 costs[Common.dirToInt(to)] -= 1000 / me.distanceSquaredTo(neutral.location);
             }
         }
-
+        System.out.println(Arrays.toString(costs));
         return costs;
     }
 
@@ -219,7 +222,7 @@ public class ArchonDefault extends Mood
         c = new Comm(rc);
         archon_positions=new HashMap<>();
         den_positions = new HashMap<>();
-        parts_positions = new HashMap<>();
+        parts_positions = new HashSet<>();
     }
 
     public ArchonDefault(RobotController rc, FieldController fc)
@@ -233,7 +236,7 @@ public class ArchonDefault extends Mood
         c = new Comm(rc);
         archon_positions=new HashMap<>();
         den_positions = new HashMap<>();
-        parts_positions = new HashMap<>();
+        parts_positions = new HashSet<>();
     }
 
     @Override

@@ -1,9 +1,6 @@
 package team018.units.scout;
 
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
-import battlecode.common.RobotInfo;
-import battlecode.common.RobotType;
+import battlecode.common.*;
 import team018.frameworks.comm.Comm;
 import team018.frameworks.comm.SignalInfo;
 import team018.frameworks.comm.SignalType;
@@ -44,7 +41,6 @@ public class Explore extends Mood {
         avgY=me.y;
         moves = 1;
 
-        //p = new Potential(rc, en_costs, al_costs, false);
         fc = new FieldController(rc);
         fc.can_fly=true;
         Force stdForce = new Force(rc) {
@@ -67,6 +63,7 @@ public class Explore extends Mood {
     public void update() {
         super.update();
         nearby = rc.senseNearbyRobots();
+        part_report_cd--;
     }
 
     @Override
@@ -107,8 +104,8 @@ public class Explore extends Mood {
                     si.targetLoc=t;
                     si.type=SignalType.FOUND_PARTS;
                     si.data=(int)(parts*1000);
-                    c.sendSignal(si, 100);
-                    part_report_cd=45;
+                    c.sendSignal(si, 2000);
+                    part_report_cd=15;
                 }
 
                 adj_costs[i] += 1000.0/t.distanceSquaredTo(avg);
@@ -118,9 +115,11 @@ public class Explore extends Mood {
                 for (MapLocation m : archon_positions.values()) {
                     adj_costs[i] += 700.0/t.distanceSquaredTo(m);
                 }
-            }
-            part_report_cd--;
 
+                if (rc.senseRubble(t) > GameConstants.RUBBLE_OBSTRUCTION_THRESH) {
+                    adj_costs[i] -= 200;
+                }
+            }
 
             int best_dir = fc.findDir(nearby, adj_costs);
             if (best_dir != -1) {
