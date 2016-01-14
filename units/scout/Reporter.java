@@ -2,6 +2,8 @@ package team018.units.scout;
 
 import battlecode.common.*;
 import team018.frameworks.comm.Comm;
+import team018.frameworks.comm.SignalInfo;
+import team018.frameworks.comm.SignalType;
 import team018.frameworks.moods.Mood;
 import team018.frameworks.movement.FieldController;
 import team018.frameworks.movement.Force;
@@ -51,13 +53,30 @@ public class Reporter extends Mood
         RobotInfo target = null;
         int distance = Integer.MIN_VALUE, checkDistance,
             priority = Integer.MIN_VALUE, checkPriority;
-        MapLocation bestLocation = null, checkLocation;
+        MapLocation location = null, checkLocation;
+
+        //  Find the closest enemy with highest priority
         for (RobotInfo enemy: hostile)
         {
             checkLocation = enemy.location;
             checkDistance = me.distanceSquaredTo(checkLocation);
-            checkPriority = Common.get
-            if ()
+            checkPriority = Common.getAttackPriority(enemy);
+            if (priority < checkPriority || checkDistance < distance)
+            {
+                location = checkLocation;
+                distance = checkDistance;
+                priority = checkPriority;
+            }
+        }
+
+
+        //  If something was found, report it
+        if (location != null)
+        {
+            SignalInfo si = new SignalInfo();
+            si.targetLoc = location;
+            si.type = SignalType.ATTACK;
+            c.sendSignal(si, RobotType.SCOUT.sensorRadiusSquared);
         }
     }
 }

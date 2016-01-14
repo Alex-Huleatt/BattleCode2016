@@ -123,4 +123,31 @@ public class Common {
         }
     }
 
+    public static int getAttackPriority(RobotInfo info)
+    {
+        switch (info.type)
+        {
+            case SOLDIER:
+                return 1;
+            case GUARD:
+                return 1;
+            case BIGZOMBIE:
+                return 5;
+            case FASTZOMBIE:
+                return 1;
+            case RANGEDZOMBIE:
+                return 3;
+            case ZOMBIEDEN:
+                return 0;
+            case TURRET:
+                return 3;
+            case VIPER:
+                return 3;
+            case ARCHON:
+                return 5;
+            default:
+                return 0;
+        }
+    }
+
 }
