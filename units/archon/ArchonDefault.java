@@ -43,8 +43,8 @@ public class ArchonDefault extends Mood
     //  The likelihood of spawning any unit during default behavior
     public enum SpawnRatio
     {
-        SOLDIER (RobotType.SOLDIER, 45),
-        GUARD   (RobotType.GUARD,   45),
+        SOLDIER (RobotType.SOLDIER, 65),
+        GUARD   (RobotType.GUARD,   25),
         VIPER   (RobotType.VIPER,    0),
         TURRET  (RobotType.TURRET,  10),
         SCOUT   (RobotType.SCOUT,   0);
@@ -151,7 +151,7 @@ public class ArchonDefault extends Mood
             Direction to = me.directionTo(neutral.location);
             if (to != Direction.OMNI)
             {
-                costs[Common.dirToInt(to)] -= 1000 / me.distanceSquaredTo(neutral.location);
+                costs[Common.dirToInt(to)] -= 100 / me.distanceSquaredTo(neutral.location);
             }
         }
         System.out.println(Arrays.toString(costs));
