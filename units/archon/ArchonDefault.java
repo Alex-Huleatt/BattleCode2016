@@ -134,7 +134,7 @@ public class ArchonDefault extends Mood
 
     protected double[] init_costs()
     {
-        double[] costs = new double[9];
+        double[] costs = new double[8];
         HashSet<Pair<MapLocation, Integer>> updt_parts = new HashSet<>();
         for (Pair<MapLocation, Integer> parts: parts_positions)
         {
@@ -144,7 +144,7 @@ public class ArchonDefault extends Mood
 
             for (int i = 0; i < 8; i++) {
                 MapLocation to = me.add(Common.directions[i]);
-                costs[i] -= (parts.b * 3000.0) / to.distanceSquaredTo(parts.a);
+                costs[i] -= (parts.b * 30000.0) / to.distanceSquaredTo(parts.a);
             }
 
         }
@@ -219,7 +219,7 @@ public class ArchonDefault extends Mood
         super(rc);
 
         fc = new FieldController(rc);
-
+        fc.can_fly=true;
         rand = new Random(rc.getID());
         us = rc.getTeam();
         sensorRadiusSquared = RobotType.ARCHON.sensorRadiusSquared;
@@ -227,46 +227,24 @@ public class ArchonDefault extends Mood
         c = new Comm(rc);
         if (!GlobalMap.containsKey("archon_positions")) {
             archon_positions=new HashMap<>();
+            GlobalMap.put("archon_positions", archon_positions);
         } else {
             archon_positions=GlobalMap.get("archon_positions");
         }
         if (!GlobalMap.containsKey("den_positions")) {
             den_positions=new HashMap<>();
+            GlobalMap.put("den_positions", den_positions);
         } else {
             den_positions=GlobalMap.get("den_positions");
         }
         if (!GlobalMap.containsKey("parts_positions")) {
             parts_positions=new HashSet<>();
+            GlobalMap.put("parts_positions", parts_positions);
         } else {
             parts_positions=GlobalMap.get("parts_positions");
         }
     }
 
-    public ArchonDefault(RobotController rc, FieldController fc)
-    {
-        super(rc);
-        this.fc = fc;
-        rand = new Random(rc.getID());
-        us = rc.getTeam();
-        sensorRadiusSquared = RobotType.ARCHON.sensorRadiusSquared;
-        loc_broadcast_cd=0;
-        c = new Comm(rc);
-        if (!GlobalMap.containsKey("archon_positions")) {
-            archon_positions=new HashMap<>();
-        } else {
-            archon_positions=GlobalMap.get("archon_positions");
-        }
-        if (!GlobalMap.containsKey("den_positions")) {
-            den_positions=new HashMap<>();
-        } else {
-            den_positions=GlobalMap.get("den_positions");
-        }
-        if (!GlobalMap.containsKey("parts_positions")) {
-            parts_positions=new HashSet<>();
-        } else {
-            parts_positions=GlobalMap.get("parts_positions");
-        }
-    }
 
     @Override
     public void update()
@@ -327,7 +305,7 @@ public class ArchonDefault extends Mood
     public Mood swing()
     {
 
-        if (hostile.length > 0) {
+        if (rc.senseNearbyRobots(RobotType.SOLDIER.attackRadiusSquared, team.opponent()).length > 0) {
             return new Spooked(rc);
         }
         return null;

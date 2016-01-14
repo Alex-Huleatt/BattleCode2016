@@ -44,6 +44,7 @@ public class Solo extends Mood
 
 
         fc = new FieldController(rc);
+        fc.can_fly=true;
         broadcast_cd=0;
         c = new Comm(rc);
         halp_cd = 0;
@@ -134,6 +135,8 @@ public class Solo extends Mood
                     } else if (!Common.isObstacle(rc, best_dir)){
                         MapLocation dest = me.add(Common.directions[best_dir]);
                         Common.basicMove(rc, dest);
+                    } else {
+                        rc.clearRubble(Common.directions[best_dir]);
                     }
                 }
             }
