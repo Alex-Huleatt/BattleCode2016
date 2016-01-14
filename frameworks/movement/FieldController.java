@@ -52,7 +52,7 @@ public class FieldController {
     public int findDir(RobotInfo[] rarr, double[] costs) throws Exception {
         MapLocation me = rc.getLocation();
         for (int i = 0; i < 8; i++) {
-            if ((!can_fly && Common.isObstacle(rc, Common.directions[i])) || !rc.canMove(Common.directions[i])) {
+            if ((!can_fly && Common.isObstacle(rc, Common.directions[i]))) {
                 costs[i] = Double.POSITIVE_INFINITY;
             }
         }

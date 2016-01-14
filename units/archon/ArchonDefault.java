@@ -7,9 +7,9 @@ import team018.frameworks.comm.SignalType;
 import team018.frameworks.moods.Mood;
 import team018.frameworks.movement.FieldController;
 import team018.frameworks.util.Common;
+import team018.frameworks.util.GlobalMap;
 import team018.frameworks.util.Pair;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -43,8 +43,8 @@ public class ArchonDefault extends Mood
     //  The likelihood of spawning any unit during default behavior
     public enum SpawnRatio
     {
-        SOLDIER (RobotType.SOLDIER, 45),
-        GUARD   (RobotType.GUARD,   45),
+        SOLDIER (RobotType.SOLDIER, 65),
+        GUARD   (RobotType.GUARD,   25),
         VIPER   (RobotType.VIPER,    0),
         TURRET  (RobotType.TURRET,  10),
         SCOUT   (RobotType.SCOUT,   0);
@@ -91,7 +91,6 @@ public class ArchonDefault extends Mood
             if (si.type==SignalType.FOUND_PARTS)
             {
                 parts_positions.add(new Pair<>(si.targetLoc, si.data));
-
             }
         }
     }
@@ -135,26 +134,32 @@ public class ArchonDefault extends Mood
 
     protected double[] init_costs()
     {
-        double[] costs = new double[9];
-
+        double[] costs = new double[8];
+        HashSet<Pair<MapLocation, Integer>> updt_parts = new HashSet<>();
         for (Pair<MapLocation, Integer> parts: parts_positions)
         {
-            Direction to = me.directionTo(parts.a);
-            if (to != Direction.OMNI)
-            {
-                costs[Common.dirToInt(to)] -= (parts.b * 3000000.0) / me.distanceSquaredTo(parts.a);
+            if (!(rc.canSenseLocation(parts.a) && rc.senseParts(parts.a)==0)) {
+                updt_parts.add(parts);
             }
-        }
 
-        for (RobotInfo neutral: neutrals)
-        {
-            Direction to = me.directionTo(neutral.location);
-            if (to != Direction.OMNI)
-            {
-                costs[Common.dirToInt(to)] -= 1000 / me.distanceSquaredTo(neutral.location);
+            for (int i = 0; i < 8; i++) {
+                MapLocation to = me.add(Common.directions[i]);
+                costs[i] -= (parts.b * 30000.0) / to.distanceSquaredTo(parts.a);
             }
+
         }
-        //System.out.println(Arrays.toString(costs));
+        parts_positions=updt_parts;
+
+        for (RobotInfo neuts: neutrals)
+        {
+
+            for (int i = 0; i < 8; i++) {
+                MapLocation to = me.add(Common.directions[i]);
+                costs[i] -= 1000 / to.distanceSquaredTo(neuts.location);
+            }
+
+        }
+        parts_positions=updt_parts;
         return costs;
     }
 
@@ -214,30 +219,32 @@ public class ArchonDefault extends Mood
         super(rc);
 
         fc = new FieldController(rc);
-
+        fc.can_fly=true;
         rand = new Random(rc.getID());
         us = rc.getTeam();
         sensorRadiusSquared = RobotType.ARCHON.sensorRadiusSquared;
         loc_broadcast_cd=0;
         c = new Comm(rc);
-        archon_positions=new HashMap<>();
-        den_positions = new HashMap<>();
-        parts_positions = new HashSet<>();
+        if (!GlobalMap.containsKey("archon_positions")) {
+            archon_positions=new HashMap<>();
+            GlobalMap.put("archon_positions", archon_positions);
+        } else {
+            archon_positions=GlobalMap.get("archon_positions");
+        }
+        if (!GlobalMap.containsKey("den_positions")) {
+            den_positions=new HashMap<>();
+            GlobalMap.put("den_positions", den_positions);
+        } else {
+            den_positions=GlobalMap.get("den_positions");
+        }
+        if (!GlobalMap.containsKey("parts_positions")) {
+            parts_positions=new HashSet<>();
+            GlobalMap.put("parts_positions", parts_positions);
+        } else {
+            parts_positions=GlobalMap.get("parts_positions");
+        }
     }
 
-    public ArchonDefault(RobotController rc, FieldController fc)
-    {
-        super(rc);
-        this.fc = fc;
-        rand = new Random(rc.getID());
-        us = rc.getTeam();
-        sensorRadiusSquared = RobotType.ARCHON.sensorRadiusSquared;
-        loc_broadcast_cd=0;
-        c = new Comm(rc);
-        archon_positions=new HashMap<>();
-        den_positions = new HashMap<>();
-        parts_positions = new HashSet<>();
-    }
 
     @Override
     public void update()
@@ -247,6 +254,7 @@ public class ArchonDefault extends Mood
         ready = rc.isCoreReady();
         hostile = rc.senseHostileRobots(me, rc.getType().sensorRadiusSquared);
         neutrals = rc.senseNearbyRobots(sensorRadiusSquared, Team.NEUTRAL);
+
     }
 
     @Override
@@ -297,7 +305,7 @@ public class ArchonDefault extends Mood
     public Mood swing()
     {
 
-        if (hostile.length > 0) {
+        if (rc.senseNearbyRobots(RobotType.SOLDIER.attackRadiusSquared, team.opponent()).length > 0) {
             return new Spooked(rc);
         }
         return null;

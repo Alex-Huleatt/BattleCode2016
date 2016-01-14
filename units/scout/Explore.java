@@ -92,21 +92,25 @@ public class Explore extends Mood {
                 }
             }
 
+            MapLocation[] nearby_parts = rc.sensePartLocations(10);
+            for (MapLocation m : nearby_parts) {
+                if (part_report_cd<=0) {
+                    si = new SignalInfo();
+                    si.targetLoc=m;
+                    si.type=SignalType.FOUND_PARTS;
+                    si.data=(int)(rc.senseParts(m)*1000);
+                    c.sendSignal(si, 2000);
+                    part_report_cd=15;
+                }
+            }
+
 
             double[] adj_costs = new double[8];
             MapLocation avg = new MapLocation(avgX / moves, avgY / moves);
             MapLocation t;
             for (int i = 0; i < 8; i++) {
                 t = me.add(Common.directions[i]);
-                double parts = rc.senseParts(t);
-                if (parts > 0 && part_report_cd<=0) {
-                    si = new SignalInfo();
-                    si.targetLoc=t;
-                    si.type=SignalType.FOUND_PARTS;
-                    si.data=(int)(parts*1000);
-                    c.sendSignal(si, 2000);
-                    part_report_cd=15;
-                }
+
 
                 adj_costs[i] += 1000.0/t.distanceSquaredTo(avg);
                 if (visited.get(t.hashCode())) {
