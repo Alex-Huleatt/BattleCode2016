@@ -304,7 +304,7 @@ public class ArchonDefault extends Mood
     public Mood swing()
     {
 
-        if (rc.senseNearbyRobots(RobotType.SOLDIER.attackRadiusSquared, team.opponent()).length > 0) {
+        if (rc.senseHostileRobots(me, 25).length > 0) {
             return new Spooked(rc);
         }
         return null;

@@ -46,7 +46,7 @@ public class Common {
 
     public static MapLocation intToLoc(int l) {
 
-        byte y = (byte) (l & 255);
+        byte y = (byte) (l & 0xFF);
         byte x = (byte) (l >> 8);
         return new MapLocation(x, y);
     }
@@ -57,7 +57,8 @@ public class Common {
         }
         byte x = (byte) m.x;
         byte y = (byte) m.y;
-        return x << 8 | y;
+
+        return ((x&0xFF)<<8)|(y&0xFF);
     }
 
     public static boolean isObstacle(RobotController rc, Direction dir) throws Exception {
@@ -66,7 +67,7 @@ public class Common {
 
     public static boolean isObstacle(RobotController rc, MapLocation loc) throws Exception {
         if (rc.canSenseLocation(loc)) {
-            return rc.senseRubble(loc) > GameConstants.RUBBLE_OBSTRUCTION_THRESH
+            return rc.senseRubble(loc) >= GameConstants.RUBBLE_OBSTRUCTION_THRESH
                     || rc.senseRobotAtLocation(loc) != null
                     || !rc.onTheMap(loc);
         }

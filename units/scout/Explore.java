@@ -119,10 +119,6 @@ public class Explore extends Mood {
                 for (MapLocation m : archon_positions.values()) {
                     adj_costs[i] += 700.0/t.distanceSquaredTo(m);
                 }
-
-                if (rc.senseRubble(t) > GameConstants.RUBBLE_OBSTRUCTION_THRESH) {
-                    adj_costs[i] -= 200;
-                }
             }
 
             int best_dir = fc.findDir(nearby, adj_costs);
