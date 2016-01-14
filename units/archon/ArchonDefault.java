@@ -154,7 +154,7 @@ public class ArchonDefault extends Mood
                 costs[Common.dirToInt(to)] -= 1000 / me.distanceSquaredTo(neutral.location);
             }
         }
-        System.out.println(Arrays.toString(costs));
+        //System.out.println(Arrays.toString(costs));
         return costs;
     }
 
