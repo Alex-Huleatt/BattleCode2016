@@ -88,7 +88,7 @@ public class Solo extends Mood
             RobotInfo den = null;
             MapLocation closestLocation = null;
             MapLocation checkLocation;
-            int distance = Integer.MAX_VALUE, checkDistance, x, y;
+            int distance = Integer.MAX_VALUE, checkDistance;
             for (int i = 0; i < hostile.length; i++)
             {
                 //  Dens get special behavior
