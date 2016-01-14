@@ -14,7 +14,7 @@ public class GlobalMap {
 
     public static <K> K get(String key) {return (K)map.get(key);}
 
-    public boolean containsKey(String key) {
+    public static boolean containsKey(String key) {
         return map.containsKey(key);
     }
 }
