@@ -5,6 +5,7 @@ import java.util.HashMap;
 /**
  * Created by alexhuleatt on 1/13/16.
  */
+@SuppressWarnings("unchecked")
 public class GlobalMap {
 
     public static HashMap<String, Object> map = new HashMap<>();

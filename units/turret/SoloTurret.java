@@ -7,7 +7,6 @@ import team018.frameworks.movement.MovementController;
 /**
  * Created by alexhuleatt on 1/4/16.
  *
- * Update by Todd - Guards and Soldiers should both be able to use this
  */
 public class SoloTurret extends Mood
 {
@@ -30,7 +29,7 @@ public class SoloTurret extends Mood
     @Override
     public void update() {
         super.update();
-        hostile=rc.senseHostileRobots(me, sensorRangeSquared);
+        hostile = rc.senseHostileRobots(me, sensorRangeSquared);
     }
 
     @Override
