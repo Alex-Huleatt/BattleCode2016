@@ -35,20 +35,27 @@ public class SoloTurret extends Mood
     public void update() {
         super.update();
 
-        SignalInfo si;
 
-        while ((si = c.receiveSignal()) != null) {
+        SignalInfo si, newest = null;
 
-            if (si.type == SignalType.ATTACK || si.data < TeamTurret.TIMEOUT + rc.getRoundNum()
-                    && me.distanceSquaredTo(si.targetLoc) <= RobotType.TURRET.attackRadiusSquared)
+        while ((si = c.receiveSignal()) != null)
+        {
+
+            if (si.type == SignalType.ATTACK
+                    //  can actually attack?
+                    && me.distanceSquaredTo(si.targetLoc) <= RobotType.TURRET.attackRadiusSquared
+                    && (newest == null || newest.data < si.data)
+                    )
             {
                 target = si.targetLoc;
-                //  swing, because now we want to attack together
-                return;
+                newest = si;
             }
         }
 
-        hostile = rc.senseHostileRobots(me, sensorRangeSquared);
+        if (newest == null)
+        {
+            hostile = rc.senseHostileRobots(me, sensorRangeSquared);
+        }
     }
 
     @Override
@@ -86,10 +93,8 @@ public class SoloTurret extends Mood
                     rc.attackLocation(closestLocation);
                 }
             }
-            //  Turrets can't move, so there's nothing else to do in SoloTurret mode.
         }
     }
-
 
     @Override
     public Mood swing()

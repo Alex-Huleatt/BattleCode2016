@@ -42,14 +42,12 @@ public class Reporter extends Mood
     {
         super.update();
 
-        friendly = rc.senseNearbyRobots(RobotType.SCOUT.sensorRadiusSquared, us);
         hostile = rc.senseHostileRobots(me, RobotType.SCOUT.sensorRadiusSquared);
     }
 
     @Override
     public void act() throws Exception
     {
-        RobotInfo target = null;
         int distance = Integer.MIN_VALUE, checkDistance,
             priority = Integer.MIN_VALUE, checkPriority;
         MapLocation location = null, checkLocation;

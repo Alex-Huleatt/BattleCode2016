@@ -16,7 +16,7 @@ public class TeamTurret extends Mood
 {
     Comm c;
     MapLocation target;
-    final static int TIMEOUT = 1;
+    final static int TIMEOUT = 3;
     int cd = TIMEOUT; //  timeout of the current location
     public TeamTurret (RobotController rc, MapLocation target)
     {
@@ -25,16 +25,17 @@ public class TeamTurret extends Mood
         this.target = target;
     }
 
-    private boolean isRecent(int turn)
-    {
-        return turn < TIMEOUT + rc.getRoundNum();
-    }
-
     @Override
     public void update()
     {
         super.update();
-        if (target == null || 0 >= --cd)
+        //  Timeout our info
+        if (--cd < 0)
+        {
+            target = null;
+        }
+
+        if (target == null)
         {
             SignalInfo si, newest = null;
 
@@ -42,6 +43,7 @@ public class TeamTurret extends Mood
             {
 
                 if (si.type == SignalType.ATTACK
+                        && rc.getRoundNum() - si.data < TIMEOUT
                         //  can actually attack?
                         && me.distanceSquaredTo(si.targetLoc) <= RobotType.TURRET.attackRadiusSquared
                         && (newest == null || newest.data < si.data)
@@ -60,6 +62,7 @@ public class TeamTurret extends Mood
     {
         rc.setIndicatorString(0, "Team");
         rc.setIndicatorString(1, target.toString());
+        rc.setIndicatorString(2, cd + "");
 
         if (rc.isCoreReady() && rc.isWeaponReady() && rc.canAttackLocation(target)
                 && GameConstants.TURRET_MINIMUM_RANGE <= me.distanceSquaredTo(target))
