@@ -50,6 +50,11 @@ public class Explore extends Mood {
             }
         };
         fc.addForce(stdForce, RobotType.values());
+        Force fast_zombie_force = new Force(rc) {
+            @Override
+            public double enemy(MapLocation source, MapLocation t) { return 10000.0 / source.distanceSquaredTo(t); }
+        };
+        fc.addForce(fast_zombie_force, new RobotType[] {RobotType.FASTZOMBIE});
 
         visited = new BitSet();
         this.c = new Comm(rc);
@@ -117,7 +122,7 @@ public class Explore extends Mood {
                     adj_costs[i] += 100;
                 }
                 for (MapLocation m : archon_positions.values()) {
-                    adj_costs[i] += 700.0/t.distanceSquaredTo(m);
+                    adj_costs[i] += 1000.0/Math.sqrt(t.distanceSquaredTo(m));
                 }
             }
 

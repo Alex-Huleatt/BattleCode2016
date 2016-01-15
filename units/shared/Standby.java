@@ -13,6 +13,7 @@ import team018.frameworks.util.Common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Created by alexhuleatt on 1/4/16.
@@ -31,6 +32,8 @@ public class Standby extends Mood
     int last_dir;
     MapLocation halpLocation = null;
     double[] lingering;
+    Random rand;
+    boolean clock;
     public Standby(RobotController rc)
     {
         super(rc);
@@ -47,6 +50,8 @@ public class Standby extends Mood
         archon_positions=new HashMap<>();
 
         lingering=new double[8];
+        rand = new Random(rc.getID());
+        clock = rand.nextBoolean();
     }
 
     @Override
@@ -69,6 +74,7 @@ public class Standby extends Mood
 
                 if (si.type == SignalType.ARCHON_LOC) {
                     archon_positions.put(si.robotID, si.senderLoc);
+                    System.out.println("Archon at: " + si.senderLoc);
                 }
 
                 if (si.type == SignalType.HALP)

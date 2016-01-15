@@ -99,12 +99,12 @@ public class ArchonDefault extends Mood
     //  Other way may be intuitive, but this saves one negation later
     protected boolean broadcastLocation() throws Exception
     {
-        if (loc_broadcast_cd == 0) {
+        if (loc_broadcast_cd <= 0) {
             SignalInfo si = new SignalInfo();
             si.type= SignalType.ARCHON_LOC;
             c.sendSignal(si, 5000);
             loc_broadcast_cd = 15;
-            //System.out.println("broadcasted");
+            System.out.println("broadcasted");
             return false;
         } else {
             return true;
@@ -158,7 +158,6 @@ public class ArchonDefault extends Mood
             }
 
         }
-        parts_positions=updt_parts;
         return costs;
     }
 
